@@ -21,26 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example1.handlers;
 
-import com.tenio.common.bootstrap.annotations.Component;
-import com.tenio.core.entities.Player;
-import com.tenio.core.entities.defines.results.PlayerLoggedinResult;
+package com.tenio.examples.example1.handler;
+
+import com.tenio.common.bootstrap.annotation.Component;
+import com.tenio.common.data.ZeroObject;
+import com.tenio.core.entity.data.ServerMessage;
+import com.tenio.core.entity.define.result.ConnectionEstablishedResult;
 import com.tenio.core.extension.AbstractExtension;
-import com.tenio.core.extension.events.EventPlayerLoggedinResult;
+import com.tenio.core.extension.events.EventConnectionEstablishedResult;
+import com.tenio.core.network.entity.session.Session;
 import com.tenio.examples.server.SharedEventKey;
 
 @Component
-public final class PlayerLoggedinHandler extends AbstractExtension implements EventPlayerLoggedinResult {
+public final class ConnectionEstablishedHandler extends AbstractExtension
+    implements EventConnectionEstablishedResult {
 
-	@Override
-	public void handle(Player player, PlayerLoggedinResult result) {
-		if (result == PlayerLoggedinResult.SUCCESS) {
-			var data = object().putString(SharedEventKey.KEY_PLAYER_LOGIN,
-					String.format("Welcome to server: %s", player.getName()));
+  @Override
+  public void handle(Session session, ServerMessage message, ConnectionEstablishedResult result) {
+    if (result == ConnectionEstablishedResult.SUCCESS) {
+      var data = (ZeroObject) message.getData();
 
-			response().setContent(data.toBinary()).setRecipient(player).write();
-		}
-	}
-
+      api().login(data.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
+    }
+  }
 }

@@ -12,7 +12,7 @@ import com.tenio.engine.physic2d.common.BaseGameEntity;
 import com.tenio.engine.physic2d.common.InvertedAABBox2D;
 import com.tenio.engine.physic2d.common.Path;
 import com.tenio.engine.physic2d.graphic.Paint;
-import com.tenio.engine.physic2d.graphic.window.Windows.PPoint;
+import com.tenio.engine.physic2d.graphic.window.Windows.P2Point;
 import com.tenio.engine.physic2d.math.Vector2;
 import com.tenio.engine.physic2d.utilities.CellSpacePartition;
 import com.tenio.engine.physic2d.utilities.EntitiesRelationship;
@@ -333,7 +333,7 @@ public final class World extends AbstractHeartBeat {
 	 * This method makes sure the click is not inside any enabled Obstacles and sets
 	 * the position appropriately
 	 */
-	synchronized public void setCrosshair(PPoint p) {
+	synchronized public void setCrosshair(P2Point p) {
 		var proposedPosition = Vector2.valueOf((float) p.x, (float) p.y);
 
 		// make sure it's not inside an obstacle

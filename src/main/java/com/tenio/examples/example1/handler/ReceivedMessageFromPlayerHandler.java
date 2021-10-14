@@ -21,27 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example1.handlers;
 
-import com.tenio.common.bootstrap.annotations.Component;
+package com.tenio.examples.example1.handler;
+
+import com.tenio.common.bootstrap.annotation.Component;
 import com.tenio.common.data.ZeroObject;
-import com.tenio.core.entities.data.ServerMessage;
-import com.tenio.core.entities.defines.results.ConnectionEstablishedResult;
+import com.tenio.core.entity.Player;
+import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.core.extension.AbstractExtension;
-import com.tenio.core.extension.events.EventConnectionEstablishedResult;
-import com.tenio.core.network.entities.session.Session;
+import com.tenio.core.extension.events.EventReceivedMessageFromPlayer;
 import com.tenio.examples.server.SharedEventKey;
 
 @Component
-public final class ConnectionEstablishedHandler extends AbstractExtension implements EventConnectionEstablishedResult {
+public final class ReceivedMessageFromPlayerHandler extends AbstractExtension
+    implements EventReceivedMessageFromPlayer {
 
-	@Override
-	public void handle(Session session, ServerMessage message, ConnectionEstablishedResult result) {
-		if (result == ConnectionEstablishedResult.SUCCESS) {
-			var data = (ZeroObject) message.getData();
+  @Override
+  public void handle(Player player, ServerMessage message) {
+    var data =
+        object().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
+            player.getName(),
+            ((ZeroObject) message.getData()).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-			api().login(data.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
-		}
-	}
-
+    response().setContent(data.toBinary()).setRecipient(player).write();
+  }
 }

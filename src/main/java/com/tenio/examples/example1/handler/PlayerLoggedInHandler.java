@@ -21,26 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example1.handlers;
 
-import com.tenio.common.bootstrap.annotations.Component;
-import com.tenio.common.data.ZeroObject;
-import com.tenio.core.entities.Player;
-import com.tenio.core.entities.data.ServerMessage;
+package com.tenio.examples.example1.handler;
+
+import com.tenio.common.bootstrap.annotation.Component;
+import com.tenio.core.entity.Player;
+import com.tenio.core.entity.define.result.PlayerLoggedInResult;
 import com.tenio.core.extension.AbstractExtension;
-import com.tenio.core.extension.events.EventReceivedMessageFromPlayer;
+import com.tenio.core.extension.events.EventPlayerLoggedinResult;
 import com.tenio.examples.server.SharedEventKey;
 
 @Component
-public final class ReceivedMessageFromPlayerHandler extends AbstractExtension
-		implements EventReceivedMessageFromPlayer {
+public final class PlayerLoggedInHandler extends AbstractExtension
+    implements EventPlayerLoggedinResult {
 
-	@Override
-	public void handle(Player player, ServerMessage message) {
-		var data = object().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
-				player.getName(), ((ZeroObject) message.getData()).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
+  @Override
+  public void handle(Player player, PlayerLoggedInResult result) {
+    if (result == PlayerLoggedInResult.SUCCESS) {
+      var data = object().putString(SharedEventKey.KEY_PLAYER_LOGIN,
+          String.format("Welcome to server: %s", player.getName()));
 
-		response().setContent(data.toBinary()).setRecipient(player).write();
-	}
-
+      response().setContent(data.toBinary()).setRecipient(player).write();
+    }
+  }
 }
