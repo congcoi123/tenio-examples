@@ -21,23 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.defines;
+
+package com.tenio.examples.example2.define;
 
 public enum Location {
 
-	UNKNOWN,
+  UNKNOWN,
+  SHACK,
+  GOLD_MINE,
+  BANK,
+  SALOON;
 
-	SHACK,
-
-	GOLD_MINE,
-
-	BANK,
-
-	SALOON;
-
-	@Override
-	public String toString() {
-		return name();
-	}
-	
+  @Override
+  public String toString() {
+    return name();
+  }
 }

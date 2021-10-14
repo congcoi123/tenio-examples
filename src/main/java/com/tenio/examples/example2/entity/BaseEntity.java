@@ -21,44 +21,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.defines;
 
-/**
- * For the quick demo, create temporary some entities' id here. In a real
- * application, these id will be retrieved from database or other services.
- */
-public enum EntityName {
+package com.tenio.examples.example2.entity;
 
-	MINER("miner"),
+import com.tenio.engine.fsm.entity.AbstractEntity;
+import com.tenio.examples.example2.define.EntityName;
 
-	WIFE("wife");
+public abstract class BaseEntity extends AbstractEntity {
 
-	private final String __name;
+  private final EntityName name;
+  /**
+   * This is extra information.
+   */
+  private String mood;
 
-	private EntityName(final String name) {
-		__name = name;
-	}
+  public BaseEntity(EntityName name) {
+    super(name.get());
+    this.name = name;
+  }
 
-	public String get() {
-		return __name;
-	}
+  public String getName() {
+    return EntityName.getName(name.get());
+  }
 
-	public static String getName(String name) {
-		switch (name) {
-		case "miner":
-			return "Miner Bob";
+  public String getMood() {
+    return mood;
+  }
 
-		case "wife":
-			return "Wife Elsa";
-
-		default:
-			return "No name";
-		}
-	}
-
-	@Override
-	public String toString() {
-		return name();
-	}
-
+  public void setMood(String mood) {
+    this.mood = mood;
+  }
 }

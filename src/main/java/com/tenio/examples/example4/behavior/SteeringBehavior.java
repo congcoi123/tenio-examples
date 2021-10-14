@@ -1,5 +1,8 @@
 package com.tenio.examples.example4.behavior;
 
+import com.tenio.common.utility.MathUtility;
+import com.tenio.engine.physic2d.utility.Geometry;
+import com.tenio.engine.physic2d.utility.Transformation;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;

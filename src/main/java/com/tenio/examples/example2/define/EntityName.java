@@ -21,41 +21,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.defines;
 
-public enum MessageType {
+package com.tenio.examples.example2.define;
 
-	HI_HONEY_IM_HOME(0),
+/**
+ * For the quick demo, create temporary some entities' id here. In a real
+ * application, this id will be retrieved from database or other services.
+ */
+public enum EntityName {
 
-	STEW_READY(1);
+  MINER("miner"),
+  WIFE("wife");
 
-	private int __type;
+  private final String name;
 
-	private MessageType(final int type) {
-		__type = type;
-	}
+  EntityName(final String name) {
+    this.name = name;
+  }
 
-	public int get() {
-		return __type;
-	}
+  public static String getName(String name) {
+    switch (name) {
+      case "miner":
+        return "Miner Bob";
 
-	public static String msgToStr(int type) {
-		switch (type) {
-		case 0:
-			return "HiHoneyImHome";
+      case "wife":
+        return "Wife Elsa";
 
-		case 1:
-			return "StewReady";
+      default:
+        return "No name";
+    }
+  }
 
-		default:
-			return "Not recognized!";
+  public String get() {
+    return name;
+  }
 
-		}
-	}
-
-	@Override
-	public String toString() {
-		return name();
-	}
-
+  @Override
+  public String toString() {
+    return name();
+  }
 }

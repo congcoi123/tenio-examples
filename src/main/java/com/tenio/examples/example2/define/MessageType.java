@@ -21,34 +21,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.entities;
 
-import com.tenio.engine.fsm.entity.AbstractEntity;
-import com.tenio.examples.example2.defines.EntityName;
+package com.tenio.examples.example2.define;
 
-public abstract class BaseEntity extends AbstractEntity {
+public enum MessageType {
 
-	private final EntityName __name;
-	/**
-	 * An extra information
-	 */
-	private String __mood;
+  HI_HONEY_IM_HOME(0),
+  STEW_READY(1);
 
-	public BaseEntity(EntityName name) {
-		super(name.get());
-		__name = name;
-	}
+  private final int type;
 
-	public String getName() {
-		return EntityName.getName(__name.get());
-	}
+  MessageType(final int type) {
+    this.type = type;
+  }
 
-	public String getMood() {
-		return __mood;
-	}
+  public static String msgToStr(int type) {
+    switch (type) {
+      case 0:
+        return "HiHoneyImHome";
 
-	public void setMood(String mood) {
-		__mood = mood;
-	}
+      case 1:
+        return "StewReady";
 
+      default:
+        return "Not recognized!";
+
+    }
+  }
+
+  public int get() {
+    return type;
+  }
+
+  @Override
+  public String toString() {
+    return name();
+  }
 }

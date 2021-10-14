@@ -21,63 +21,68 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.states.miner;
+package com.tenio.examples.example2.state.wife;
 
+import com.tenio.common.utilities.MathUtility;
 import com.tenio.engine.fsm.entity.State;
 import com.tenio.engine.fsm.entity.Telegram;
-import com.tenio.examples.example2.defines.Location;
-import com.tenio.examples.example2.entities.Miner;
+import com.tenio.examples.example2.define.MessageType;
+import com.tenio.examples.example2.entity.Wife;
 
 /**
- * Miner changes location to the saloon and keeps buying Whiskey until his
- * thirst is quenched. When satisfied he returns to the goldmine and resumes his
- * quest for nuggets.
+ * This is a global state, which means the miner's wife will check it every
+ * time.
  */
-public final class QuenchThirsty extends State<Miner> {
+public final class WifesGlobalState extends State<Wife> {
 
-	private static volatile QuenchThirsty __instance;
+	private static volatile WifesGlobalState __instance;
 
-	private QuenchThirsty() {
+	private WifesGlobalState() {
 	} // prevent creation manually
 
 	// preventing Singleton object instantiation from outside
 	// creates multiple instance if two thread access this method simultaneously
-	public static QuenchThirsty getInstance() {
+	public static WifesGlobalState getInstance() {
 		if (__instance == null) {
-			__instance = new QuenchThirsty();
+			__instance = new WifesGlobalState();
 		}
 		return __instance;
 	}
 
 	@Override
-	public void enter(Miner miner) {
-		if (miner.getLocation() != Location.SALOON) {
-			miner.changeLocation(Location.SALOON);
+	public void enter(Wife wife) {
 
-			miner.setMood(miner.getName() + ": " + "Boy, ah sure is thusty! Walking to the saloon");
-			System.out.println("\n" + miner.getMood());
+	}
+
+	@Override
+	public void execute(Wife wife) {
+		// 1 in 10 chance of needing the bathroom(provided she is not already
+		// in the bathroom)
+		if ((MathUtility.randFloat() < 0.1f) && !wife.getFsm().isInState(VisitBathroom.getInstance())) {
+			wife.getFsm().changeState(VisitBathroom.getInstance());
 		}
 	}
 
 	@Override
-	public void execute(Miner miner) {
+	public void exit(Wife wife) {
 
-		miner.buyAndDrinkAWhiskey();
-
-		miner.setMood(miner.getName() + ": " + "That's mighty fine sippin liquer");
-		System.out.println("\n" + miner.getMood());
-
-		miner.getFSM().changeState(EnterMineAndDigForNugget.getInstance());
 	}
 
 	@Override
-	public void exit(Miner miner) {
-		miner.setMood(miner.getName() + ": " + "Leaving the saloon, feelin' good");
-		System.out.println("\n" + miner.getMood());
-	}
+	public boolean onMessage(Wife wife, Telegram msg) {
 
-	@Override
-	public boolean onMessage(Miner miner, Telegram msg) {
+		if (msg.getType() == MessageType.HI_HONEY_IM_HOME.get()) {
+			System.out.println("\nMessage handled by " + wife.getName() + " at time: " + System.currentTimeMillis());
+
+			wife.setMood(wife.getName() + ": Hi honey. Let me make you some of mah fine country stew");
+			System.out.println("\n" + wife.getMood());
+
+			wife.getFsm().changeState(CookStew.getInstance());
+
+			return true;
+
+		}
+
 		return false;
 	}
 

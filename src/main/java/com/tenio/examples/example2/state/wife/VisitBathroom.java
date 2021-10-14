@@ -21,68 +21,52 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.states.wife;
+package com.tenio.examples.example2.state.wife;
 
-import com.tenio.common.utilities.MathUtility;
 import com.tenio.engine.fsm.entity.State;
 import com.tenio.engine.fsm.entity.Telegram;
-import com.tenio.examples.example2.defines.MessageType;
-import com.tenio.examples.example2.entities.Wife;
+import com.tenio.examples.example2.entity.Wife;
 
 /**
- * This is a global state, which means the miner's wife will check it every
- * time.
+ * The miner's wife start checking the bathroom
  */
-public final class WifesGlobalState extends State<Wife> {
+public final class VisitBathroom extends State<Wife> {
 
-	private static volatile WifesGlobalState __instance;
+	private static volatile VisitBathroom __instance;
 
-	private WifesGlobalState() {
+	private VisitBathroom() {
 	} // prevent creation manually
 
 	// preventing Singleton object instantiation from outside
 	// creates multiple instance if two thread access this method simultaneously
-	public static WifesGlobalState getInstance() {
+	public static VisitBathroom getInstance() {
 		if (__instance == null) {
-			__instance = new WifesGlobalState();
+			__instance = new VisitBathroom();
 		}
 		return __instance;
 	}
 
 	@Override
 	public void enter(Wife wife) {
-
+		wife.setMood(wife.getName() + ": Walkin' to the can. Need to powda mah pretty li'lle nose");
+		System.out.println("\n" + wife.getMood());
 	}
 
 	@Override
 	public void execute(Wife wife) {
-		// 1 in 10 chance of needing the bathroom(provided she is not already
-		// in the bathroom)
-		if ((MathUtility.randFloat() < 0.1f) && !wife.getFSM().isInState(VisitBathroom.getInstance())) {
-			wife.getFSM().changeState(VisitBathroom.getInstance());
-		}
+		wife.setMood(wife.getName() + ": Ahhhhhh! Sweet relief!");
+		System.out.println("\n" + wife.getMood());
+		wife.getFsm().revertToPreviousState();
 	}
 
 	@Override
 	public void exit(Wife wife) {
-
+		wife.setMood(wife.getName() + ": Leavin' the Jon");
+		System.out.println("\n" + wife.getMood());
 	}
 
 	@Override
 	public boolean onMessage(Wife wife, Telegram msg) {
-
-		if (msg.getType() == MessageType.HI_HONEY_IM_HOME.get()) {
-			System.out.println("\nMessage handled by " + wife.getName() + " at time: " + System.currentTimeMillis());
-
-			wife.setMood(wife.getName() + ": Hi honey. Let me make you some of mah fine country stew");
-			System.out.println("\n" + wife.getMood());
-
-			wife.getFSM().changeState(CookStew.getInstance());
-
-			return true;
-
-		}
-
 		return false;
 	}
 

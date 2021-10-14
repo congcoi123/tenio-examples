@@ -21,54 +21,55 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.tenio.examples.example2.states.miner;
+
+package com.tenio.examples.example2.state.miner;
 
 import com.tenio.engine.fsm.entity.State;
 import com.tenio.engine.fsm.entity.Telegram;
-import com.tenio.examples.example2.entities.Miner;
+import com.tenio.examples.example2.entity.Miner;
 
 /**
  * This is implemented as a state blip. The miner eats the stew, gives his wife
- * some compliments and then returns to his previous state
+ * some compliments and then returns to his previous state.
  */
 public final class EatStew extends State<Miner> {
 
-	private static volatile EatStew __instance;
+  private static volatile EatStew instance;
 
-	private EatStew() {
-	} // prevent creation manually
+  private EatStew() {
+  } // prevent creation manually
 
-	// preventing Singleton object instantiation from outside
-	// creates multiple instance if two thread access this method simultaneously
-	public static EatStew getInstance() {
-		if (__instance == null) {
-			__instance = new EatStew();
-		}
-		return __instance;
-	}
+  // preventing Singleton object instantiation from outside
+  // creates multiple instance if two thread access this method simultaneously
+  public static EatStew getInstance() {
+    if (instance == null) {
+      instance = new EatStew();
+    }
+    return instance;
+  }
 
-	@Override
-	public void enter(Miner miner) {
-		miner.setMood(miner.getName() + ": " + "Smells Reaaal goood Elsa!");
-		System.out.println("\n" + miner.getMood());
-	}
+  @Override
+  public void enter(Miner miner) {
+    miner.setMood(miner.getName() + ": " + "Smells Reaaal goood Elsa!");
+    System.out.println("\n" + miner.getMood());
+  }
 
-	@Override
-	public void execute(Miner miner) {
-		miner.setMood(miner.getName() + ": " + "Tastes real good too!");
-		System.out.println("\n" + miner.getMood());
-		miner.getFSM().revertToPreviousState();
-	}
+  @Override
+  public void execute(Miner miner) {
+    miner.setMood(miner.getName() + ": " + "Tastes real good too!");
+    System.out.println("\n" + miner.getMood());
+    miner.getFsm().revertToPreviousState();
+  }
 
-	@Override
-	public void exit(Miner miner) {
-		miner.setMood(miner.getName() + ": " + "Thankya li'lle lady. Ah better get back to whatever ah wuz doin'");
-		System.out.println("\n" + miner.getMood());
-	}
+  @Override
+  public void exit(Miner miner) {
+    miner.setMood(miner.getName() + ": " +
+        "Thankya li'lle lady. Ah better get back to whatever ah wuz doin'");
+    System.out.println("\n" + miner.getMood());
+  }
 
-	@Override
-	public boolean onMessage(Miner miner, Telegram msg) {
-		return false;
-	}
-
+  @Override
+  public boolean onMessage(Miner miner, Telegram msg) {
+    return false;
+  }
 }
