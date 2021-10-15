@@ -25,7 +25,6 @@ THE SOFTWARE.
 package com.tenio.examples.example1.configuration;
 
 import com.tenio.common.bootstrap.annotation.Component;
-import com.tenio.common.bootstrap.annotations.Component;
 import com.tenio.common.configuration.Configuration;
 import com.tenio.core.configuration.CoreConfiguration;
 import com.tenio.examples.server.ExampleConfigurationType;

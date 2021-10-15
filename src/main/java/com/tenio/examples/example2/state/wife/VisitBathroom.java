@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package com.tenio.examples.example2.state.wife;
 
 import com.tenio.engine.fsm.entity.State;
@@ -28,46 +29,45 @@ import com.tenio.engine.fsm.entity.Telegram;
 import com.tenio.examples.example2.entity.Wife;
 
 /**
- * The miner's wife start checking the bathroom
+ * The miner's wife start checking the bathroom.
  */
 public final class VisitBathroom extends State<Wife> {
 
-	private static volatile VisitBathroom __instance;
+  private static volatile VisitBathroom instance;
 
-	private VisitBathroom() {
-	} // prevent creation manually
+  private VisitBathroom() {
+  } // prevent creation manually
 
-	// preventing Singleton object instantiation from outside
-	// creates multiple instance if two thread access this method simultaneously
-	public static VisitBathroom getInstance() {
-		if (__instance == null) {
-			__instance = new VisitBathroom();
-		}
-		return __instance;
-	}
+  // preventing Singleton object instantiation from outside
+  // creates multiple instance if two thread access this method simultaneously
+  public static VisitBathroom getInstance() {
+    if (instance == null) {
+      instance = new VisitBathroom();
+    }
+    return instance;
+  }
 
-	@Override
-	public void enter(Wife wife) {
-		wife.setMood(wife.getName() + ": Walkin' to the can. Need to powda mah pretty li'lle nose");
-		System.out.println("\n" + wife.getMood());
-	}
+  @Override
+  public void enter(Wife wife) {
+    wife.setMood(wife.getName() + ": Walkin' to the can. Need to powda mah pretty li'lle nose");
+    System.out.println("\n" + wife.getMood());
+  }
 
-	@Override
-	public void execute(Wife wife) {
-		wife.setMood(wife.getName() + ": Ahhhhhh! Sweet relief!");
-		System.out.println("\n" + wife.getMood());
-		wife.getFsm().revertToPreviousState();
-	}
+  @Override
+  public void execute(Wife wife) {
+    wife.setMood(wife.getName() + ": Ahhhhhh! Sweet relief!");
+    System.out.println("\n" + wife.getMood());
+    wife.getFsm().revertToPreviousState();
+  }
 
-	@Override
-	public void exit(Wife wife) {
-		wife.setMood(wife.getName() + ": Leavin' the Jon");
-		System.out.println("\n" + wife.getMood());
-	}
+  @Override
+  public void exit(Wife wife) {
+    wife.setMood(wife.getName() + ": Leavin' the Jon");
+    System.out.println("\n" + wife.getMood());
+  }
 
-	@Override
-	public boolean onMessage(Wife wife, Telegram msg) {
-		return false;
-	}
-
+  @Override
+  public boolean onMessage(Wife wife, Telegram msg) {
+    return false;
+  }
 }

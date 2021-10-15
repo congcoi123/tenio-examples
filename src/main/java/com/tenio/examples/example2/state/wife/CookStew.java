@@ -101,7 +101,6 @@ public final class CookStew extends State<Wife> {
 
       return true;
     }
-
     return false;
   }
 }

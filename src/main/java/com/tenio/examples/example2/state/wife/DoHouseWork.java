@@ -21,65 +21,64 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package com.tenio.examples.example2.state.wife;
 
-import com.tenio.common.utilities.MathUtility;
+import com.tenio.common.utility.MathUtility;
 import com.tenio.engine.fsm.entity.State;
 import com.tenio.engine.fsm.entity.Telegram;
 import com.tenio.examples.example2.entity.Wife;
 
 /**
- * The miner's wife start doing housework
+ * The miner's wife start doing housework.
  */
 public final class DoHouseWork extends State<Wife> {
 
-	private static volatile DoHouseWork __instance;
+  private static volatile DoHouseWork instance;
 
-	private DoHouseWork() {
-	} // prevent creation manually
+  private DoHouseWork() {
+  } // prevent creation manually
 
-	// preventing Singleton object instantiation from outside
-	// creates multiple instance if two thread access this method simultaneously
-	public static DoHouseWork getInstance() {
-		if (__instance == null) {
-			__instance = new DoHouseWork();
-		}
-		return __instance;
-	}
+  // preventing Singleton object instantiation from outside
+  // creates multiple instance if two thread access this method simultaneously
+  public static DoHouseWork getInstance() {
+    if (instance == null) {
+      instance = new DoHouseWork();
+    }
+    return instance;
+  }
 
-	@Override
-	public void enter(Wife wife) {
-		wife.setMood(wife.getName() + ": Time to do some more housework!");
-		System.out.println("\n" + wife.getMood());
-	}
+  @Override
+  public void enter(Wife wife) {
+    wife.setMood(wife.getName() + ": Time to do some more housework!");
+    System.out.println("\n" + wife.getMood());
+  }
 
-	@Override
-	public void execute(Wife wife) {
-		switch (MathUtility.randInt(0, 2)) {
-		case 0:
-			wife.setMood(wife.getName() + ": Moppin' the floor");
-			break;
+  @Override
+  public void execute(Wife wife) {
+    switch (MathUtility.randInt(0, 2)) {
+      case 0:
+        wife.setMood(wife.getName() + ": Moppin' the floor");
+        break;
 
-		case 1:
-			wife.setMood(wife.getName() + ": Washin' the dishes");
-			break;
+      case 1:
+        wife.setMood(wife.getName() + ": Washin' the dishes");
+        break;
 
-		case 2:
-			wife.setMood(wife.getName() + ": Makin' the bed");
-			break;
+      case 2:
+        wife.setMood(wife.getName() + ": Makin' the bed");
+        break;
 
-		}
-		System.out.println("\n" + wife.getMood());
-	}
+    }
+    System.out.println("\n" + wife.getMood());
+  }
 
-	@Override
-	public void exit(Wife entity) {
+  @Override
+  public void exit(Wife entity) {
+  }
 
-	}
-
-	@Override
-	public boolean onMessage(Wife entity, Telegram msg) {
-		return false;
-	}
-
+  @Override
+  public boolean onMessage(Wife entity, Telegram msg) {
+    return false;
+  }
 }

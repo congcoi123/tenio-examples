@@ -13,6 +13,7 @@
         It supports UDP and TCP transports which are handled by Netty for high-speed network transmission.
         It uses MsgPack for compressing data so that can be transferred quickly through the network.
         This framework can help you quickly create a game server or integrate it into your system.
+        This project contains a collection of examples for manipulating the framework that you may find helpful.
     </description>
 	<url>https://github.com/congcoi123/tenio</url>
 

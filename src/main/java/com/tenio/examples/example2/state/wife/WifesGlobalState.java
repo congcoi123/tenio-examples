@@ -21,9 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 package com.tenio.examples.example2.state.wife;
 
-import com.tenio.common.utilities.MathUtility;
+import com.tenio.common.utility.MathUtility;
 import com.tenio.engine.fsm.entity.State;
 import com.tenio.engine.fsm.entity.Telegram;
 import com.tenio.examples.example2.define.MessageType;
@@ -35,55 +36,52 @@ import com.tenio.examples.example2.entity.Wife;
  */
 public final class WifesGlobalState extends State<Wife> {
 
-	private static volatile WifesGlobalState __instance;
+  private static volatile WifesGlobalState instance;
 
-	private WifesGlobalState() {
-	} // prevent creation manually
+  private WifesGlobalState() {
+  } // prevent creation manually
 
-	// preventing Singleton object instantiation from outside
-	// creates multiple instance if two thread access this method simultaneously
-	public static WifesGlobalState getInstance() {
-		if (__instance == null) {
-			__instance = new WifesGlobalState();
-		}
-		return __instance;
-	}
+  // preventing Singleton object instantiation from outside
+  // creates multiple instance if two thread access this method simultaneously
+  public static WifesGlobalState getInstance() {
+    if (instance == null) {
+      instance = new WifesGlobalState();
+    }
+    return instance;
+  }
 
-	@Override
-	public void enter(Wife wife) {
+  @Override
+  public void enter(Wife wife) {
 
-	}
+  }
 
-	@Override
-	public void execute(Wife wife) {
-		// 1 in 10 chance of needing the bathroom(provided she is not already
-		// in the bathroom)
-		if ((MathUtility.randFloat() < 0.1f) && !wife.getFsm().isInState(VisitBathroom.getInstance())) {
-			wife.getFsm().changeState(VisitBathroom.getInstance());
-		}
-	}
+  @Override
+  public void execute(Wife wife) {
+    // 1 in 10 chance of needing the bathroom(provided she is not already
+    // in the bathroom)
+    if ((MathUtility.randFloat() < 0.1f) && !wife.getFsm().isInState(VisitBathroom.getInstance())) {
+      wife.getFsm().changeState(VisitBathroom.getInstance());
+    }
+  }
 
-	@Override
-	public void exit(Wife wife) {
+  @Override
+  public void exit(Wife wife) {
+  }
 
-	}
+  @Override
+  public boolean onMessage(Wife wife, Telegram msg) {
 
-	@Override
-	public boolean onMessage(Wife wife, Telegram msg) {
+    if (msg.getType() == MessageType.HI_HONEY_IM_HOME.get()) {
+      System.out.println(
+          "\nMessage handled by " + wife.getName() + " at time: " + System.currentTimeMillis());
 
-		if (msg.getType() == MessageType.HI_HONEY_IM_HOME.get()) {
-			System.out.println("\nMessage handled by " + wife.getName() + " at time: " + System.currentTimeMillis());
+      wife.setMood(wife.getName() + ": Hi honey. Let me make you some of mah fine country stew");
+      System.out.println("\n" + wife.getMood());
 
-			wife.setMood(wife.getName() + ": Hi honey. Let me make you some of mah fine country stew");
-			System.out.println("\n" + wife.getMood());
+      wife.getFsm().changeState(CookStew.getInstance());
 
-			wife.getFsm().changeState(CookStew.getInstance());
-
-			return true;
-
-		}
-
-		return false;
-	}
-
+      return true;
+    }
+    return false;
+  }
 }
