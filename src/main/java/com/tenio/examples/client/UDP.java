@@ -48,7 +48,7 @@ public final class UDP {
   /**
    * The desired port for listening.
    */
-  private final int __port;
+  private final int port;
   private Future<?> future;
   private DatagramSocket datagramSocket;
   private InetAddress inetAddress;
@@ -83,7 +83,7 @@ public final class UDP {
     } catch (UnknownHostException e) {
       e.printStackTrace();
     }
-    __port = port;
+    this.port = port;
   }
 
   public UDP(int port) {
@@ -97,7 +97,7 @@ public final class UDP {
    */
   public void send(ServerMessage message) {
     var pack = message.getData().toBinary();
-    var request = new DatagramPacket(pack, pack.length, inetAddress, __port);
+    var request = new DatagramPacket(pack, pack.length, inetAddress, port);
     try {
       datagramSocket.send(request);
     } catch (IOException e) {
