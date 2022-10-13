@@ -123,7 +123,9 @@ public final class TestClientAttach implements SocketListener, DatagramListener 
   }
 
   @Override
-  public void onReceivedUDP(ServerMessage message) {
+  public void onReceivedUDP(byte[] binary) {
+    var data = ZeroUtility.binaryToMap(binary);
+    var message = ServerMessage.newInstance().setData(data);
     System.err.println("[RECV FROM SERVER UDP] -> " + message);
   }
 }

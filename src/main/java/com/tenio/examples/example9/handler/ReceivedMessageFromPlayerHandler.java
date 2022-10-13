@@ -38,8 +38,6 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
 
   @Override
   public void handle(Player player, ServerMessage message) {
-    info("KCP RECEIVE", message);
-
     var data =
         object().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
             player.getName(),

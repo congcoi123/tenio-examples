@@ -215,7 +215,10 @@ public final class TestClientMovement extends AbstractLogger
   }
 
   @Override
-  public void onReceivedUDP(ServerMessage message) {
+  public void onReceivedUDP(byte[] binary) {
+    var data = ZeroUtility.binaryToMap(binary);
+    var message = ServerMessage.newInstance().setData(data);
+
     if (LOGGER_DEBUG) {
       System.err.println("[RECV FROM SERVER UDP] -> " + message);
     }

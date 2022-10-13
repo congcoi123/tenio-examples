@@ -33,7 +33,7 @@ import com.tenio.core.network.entity.kcp.Ukcp;
 import com.tenio.core.network.entity.session.Session;
 import com.tenio.core.network.entity.session.manager.SessionManager;
 import com.tenio.core.network.statistic.NetworkReaderStatistic;
-import com.tenio.core.network.zero.engine.KcpWriter;
+import com.tenio.core.network.statistic.NetworkWriterStatistic;
 import com.tenio.core.network.zero.handler.KcpIoHandler;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.DatagramListener;
@@ -43,7 +43,6 @@ import com.tenio.examples.client.TCP;
 import com.tenio.examples.client.UDP;
 import com.tenio.examples.server.SharedEventKey;
 import com.tenio.examples.server.UdpEstablishedState;
-import java.net.DatagramSocket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -63,6 +62,7 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
   private final TCP tcp;
   private final Session session;
   private final String playerName;
+  private final NetworkWriterStatistic networkWriterStatistic;
   private UDP udp;
 
   public TestClientKcpEcho() {
@@ -73,6 +73,8 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
     tcp.receive(this);
     session = tcp.getSession();
     session.setName(playerName);
+
+    networkWriterStatistic = NetworkWriterStatistic.newInstance();
 
     // send a login request
     var data =
@@ -161,17 +163,19 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
           }
         }
 
-        tcp.close();
+        session.setUkcp(null);
         udp.close();
+        tcp.close();
       }
       break;
     }
   }
 
   private Ukcp initializeKcp(int conv) {
-    KcpWriter<DatagramSocket> kcpWriter = new KcpWriterHandler(udp.getDatagramSocket(),
+    var kcpWriter = new KcpWriterHandler(udp.getDatagramSocket(),
         udp.getLocalAddress(), udp.getRemotePort());
-    var ukcp = new Ukcp(conv, KcpConfiguration.PROFILE, session, this, kcpWriter);
+    var ukcp =
+        new Ukcp(conv, KcpConfiguration.PROFILE, session, this, kcpWriter, networkWriterStatistic);
     ukcp.getKcpIoHandler().channelActiveIn(session);
 
     return ukcp;
@@ -183,20 +187,13 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
           if (session.containsKcp()) {
             var ukcp = session.getUkcp();
             ukcp.update();
-            byte[] buffer = new byte[UDP.DEFAULT_BYTE_BUFFER_SIZE];
-            ukcp.receive(buffer);
+            ukcp.receive();
           }
         }, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   @Override
-  public void onReceivedUDP(ServerMessage message) {
-    System.err.println("[RECV FROM SERVER UDP (MESSAGE)] -> " + message);
-  }
-
-  @Override
   public void onReceivedUDP(byte[] binary) {
-    System.err.println("[RECV FROM SERVER UDP (BINARY)}] -> " + binary.length);
     session.getUkcp().input(binary);
   }
 }

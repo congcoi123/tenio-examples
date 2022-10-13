@@ -40,7 +40,7 @@ public class KcpWriterHandler implements KcpWriter<DatagramSocket> {
   }
 
   @Override
-  public int write(byte[] binaries, int size) throws IOException {
+  public int send(byte[] binaries, int size) throws IOException {
     var request = new DatagramPacket(binaries, size, getLocalAddress(), getPort());
     datagramSocket.send(request);
     return size;

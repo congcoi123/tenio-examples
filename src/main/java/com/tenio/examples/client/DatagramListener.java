@@ -24,22 +24,11 @@ THE SOFTWARE.
 
 package com.tenio.examples.client;
 
-import com.tenio.core.entity.data.ServerMessage;
-
 /**
  * This interface helps you listen to all messages these came from the server's
  * UDP port.
  */
 public interface DatagramListener {
 
-  /**
-   * Listen for a new message.
-   *
-   * @param message the received message
-   */
-  void onReceivedUDP(ServerMessage message);
-
-  default void onReceivedUDP(byte[] binary) {
-
-  }
+  void onReceivedUDP(byte[] binary);
 }

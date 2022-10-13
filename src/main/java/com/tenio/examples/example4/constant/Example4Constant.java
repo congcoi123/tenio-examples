@@ -37,12 +37,12 @@ public final class Example4Constant {
   // time in seconds
   public static final int SEND_MEASUREMENT_REQUEST_INTERVAL = 20;
 
-  public static final int NUMBER_OF_PLAYERS = 200;
+  public static final int NUMBER_OF_PLAYERS = 100;
 
   public static final int ONE_SECOND_EXPECT_RECEIVE_PACKETS = 10;
 
   public static final int ONE_MINUTE_EXPECT_RECEIVE_PACKETS =
-      ONE_SECOND_EXPECT_RECEIVE_PACKETS * 60 * 100;
+      ONE_SECOND_EXPECT_RECEIVE_PACKETS * 60 * NUMBER_OF_PLAYERS;
 
   private Example4Constant() {
     throw new UnsupportedOperationException();

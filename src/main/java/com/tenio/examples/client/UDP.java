@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.tenio.examples.client;
 
-import com.tenio.common.data.utility.ZeroUtility;
 import com.tenio.common.utility.OsUtility;
 import com.tenio.core.entity.data.ServerMessage;
 import java.io.IOException;
@@ -42,7 +41,7 @@ import java.util.concurrent.Future;
  */
 public final class UDP {
 
-  public static final int DEFAULT_BYTE_BUFFER_SIZE = 10240;
+  private static final int DEFAULT_BYTE_BUFFER_SIZE = 10240;
   private static final String BROADCAST_ADDRESS = "0.0.0.0";
   /**
    * The desired port for listening.
@@ -129,9 +128,7 @@ public final class UDP {
           byte[] buffer = new byte[DEFAULT_BYTE_BUFFER_SIZE];
           var response = new DatagramPacket(buffer, buffer.length);
           datagramSocket.receive(response);
-          var data = ZeroUtility.binaryToMap(buffer);
           listener.onReceivedUDP(buffer);
-          listener.onReceivedUDP(ServerMessage.newInstance().setData(data));
         } catch (IOException e) {
           e.printStackTrace();
           return;
