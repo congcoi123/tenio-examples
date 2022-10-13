@@ -38,4 +38,8 @@ public interface DatagramListener {
    * @param message the received message
    */
   void onReceivedUDP(ServerMessage message);
+
+  default void onReceivedUDP(byte[] binary) {
+
+  }
 }

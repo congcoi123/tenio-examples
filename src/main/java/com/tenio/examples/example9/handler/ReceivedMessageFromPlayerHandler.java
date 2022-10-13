@@ -22,29 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example4.constant;
+package com.tenio.examples.example9.handler;
 
-public final class Example4Constant {
+import com.tenio.common.bootstrap.annotation.Component;
+import com.tenio.common.data.ZeroMap;
+import com.tenio.core.entity.Player;
+import com.tenio.core.entity.data.ServerMessage;
+import com.tenio.core.handler.AbstractHandler;
+import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
+import com.tenio.examples.server.SharedEventKey;
 
-  public static final int DESIGN_WIDTH = 500;
-  public static final int DESIGN_HEIGHT = 500;
+@Component
+public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
+    implements EventReceivedMessageFromPlayer {
 
-  public static final int SOCKET_PORT = 8032;
+  @Override
+  public void handle(Player player, ServerMessage message) {
+    info("KCP RECEIVE", message);
 
-  public static final float DELAY_CREATION = 0.1f;
-  // time in minutes
-  public static final int AVERAGE_LATENCY_MEASUREMENT_INTERVAL = 1;
-  // time in seconds
-  public static final int SEND_MEASUREMENT_REQUEST_INTERVAL = 20;
+    var data =
+        object().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
+            player.getName(),
+            ((ZeroMap) message.getData()).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-  public static final int NUMBER_OF_PLAYERS = 200;
-
-  public static final int ONE_SECOND_EXPECT_RECEIVE_PACKETS = 10;
-
-  public static final int ONE_MINUTE_EXPECT_RECEIVE_PACKETS =
-      ONE_SECOND_EXPECT_RECEIVE_PACKETS * 60 * 100;
-
-  private Example4Constant() {
-    throw new UnsupportedOperationException();
+    response().setContent(data.toBinary()).setRecipientPlayer(player).prioritizedUdp().write();
   }
 }

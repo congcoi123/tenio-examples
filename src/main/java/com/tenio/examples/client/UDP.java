@@ -42,7 +42,7 @@ import java.util.concurrent.Future;
  */
 public final class UDP {
 
-  private static final int DEFAULT_BYTE_BUFFER_SIZE = 10240;
+  public static final int DEFAULT_BYTE_BUFFER_SIZE = 10240;
   private static final String BROADCAST_ADDRESS = "0.0.0.0";
   /**
    * The desired port for listening.
@@ -85,6 +85,22 @@ public final class UDP {
     this(port, false);
   }
 
+  public int getLocalPort() {
+    return datagramSocket.getLocalPort();
+  }
+
+  public InetAddress getLocalAddress() {
+    return inetAddress;
+  }
+
+  public int getRemotePort() {
+    return port;
+  }
+
+  public DatagramSocket getDatagramSocket() {
+    return datagramSocket;
+  }
+
   /**
    * Send a message to the server.
    *
@@ -114,6 +130,7 @@ public final class UDP {
           var response = new DatagramPacket(buffer, buffer.length);
           datagramSocket.receive(response);
           var data = ZeroUtility.binaryToMap(buffer);
+          listener.onReceivedUDP(buffer);
           listener.onReceivedUDP(ServerMessage.newInstance().setData(data));
         } catch (IOException e) {
           e.printStackTrace();

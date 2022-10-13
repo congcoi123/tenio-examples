@@ -138,8 +138,8 @@ public final class TestClientMovement extends AbstractLogger
           // create a new UDP object and listen for this port
           var udp = new UDP(data.getInteger(SharedEventKey.KEY_ALLOW_TO_ATTACH_PORT));
           udp.receive(this);
-          System.out.println(
-              "UDP connected to port: " + data.getInteger(SharedEventKey.KEY_ALLOW_TO_ATTACH_PORT));
+          System.out.println(playerName + " connected to UDP port: " +
+              data.getInteger(SharedEventKey.KEY_ALLOW_TO_ATTACH_PORT));
 
           // now you can send request for UDP connection request
           var sendData =
@@ -148,14 +148,14 @@ public final class TestClientMovement extends AbstractLogger
           udp.send(request);
 
           if (LOGGER_DEBUG) {
-            System.out.println("Request a UDP connection -> " + request);
+            System.out.println(playerName + " requests a UDP connection -> " + request);
           }
         }
         break;
 
         case UdpEstablishedState.ATTACHED: {
           // the UDP connected successful, you now can send test requests
-          System.out.println("Start the conversation -> " + message);
+          System.out.println(playerName + " started the conversation -> " + message);
 
           // packets counting
           Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
