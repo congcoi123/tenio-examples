@@ -30,5 +30,10 @@ package com.tenio.examples.client;
  */
 public interface DatagramListener {
 
+  /**
+   * Listens for upcoming packets.
+   *
+   * @param binary an array of {@code byte} data
+   */
   void onReceivedUDP(byte[] binary);
 }
