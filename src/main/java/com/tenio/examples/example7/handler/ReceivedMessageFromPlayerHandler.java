@@ -25,7 +25,7 @@ THE SOFTWARE.
 package com.tenio.examples.example7.handler;
 
 import com.tenio.common.bootstrap.annotation.Component;
-import com.tenio.common.data.ZeroMap;
+import com.tenio.common.data.msgpack.element.MsgPackMap;
 import com.tenio.core.entity.Player;
 import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.core.handler.AbstractHandler;
@@ -40,7 +40,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
   @Override
   public void handle(Player player, ServerMessage message) {
     var position =
-        ((ZeroMap) message.getData()).getIntegerArray(SharedEventKey.KEY_PLAYER_POSITION)
+        ((MsgPackMap) message.getData()).getMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION)
             .toArray();
 
     player.setProperty(Example7Constant.PLAYER_POSITION_X, position[0]);
@@ -48,15 +48,15 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
 
     var players = player.getCurrentRoom().get().getReadonlyPlayersList();
 
-    var pack = array();
-    var parray = array();
+    var pack = msgarray();
+    var parray = msgarray();
     parray.addString(player.getName());
     parray.addInteger((int) position[0]);
     parray.addInteger((int) position[1]);
 
-    pack.addZeroArray(parray);
+    pack.addMsgPackArray(parray);
 
-    var request = object().putZeroArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
+    var request = msgmap().putMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
 
     response().setRecipientPlayers(players).setContent(request.toBinary()).write();
   }

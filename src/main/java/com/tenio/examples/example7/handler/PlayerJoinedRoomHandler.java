@@ -43,19 +43,19 @@ public final class PlayerJoinedRoomHandler extends AbstractHandler
       var players = room.getReadonlyPlayersList();
       var iterator = players.iterator();
 
-      var pack = array();
+      var pack = msgarray();
       if (iterator.hasNext()) {
         var rplayer = iterator.next();
 
-        var parray = array();
+        var parray = msgarray();
         parray.addString(rplayer.getName());
         parray.addInteger((int) rplayer.getProperty(Example7Constant.PLAYER_POSITION_X));
         parray.addInteger((int) rplayer.getProperty(Example7Constant.PLAYER_POSITION_Y));
 
-        pack.addZeroArray(parray);
+        pack.addMsgPackArray(parray);
       }
 
-      var message = object().putZeroArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
+      var message = msgmap().putMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
 
       response().setRecipientPlayers(players).setContent(message.toBinary()).write();
     }
