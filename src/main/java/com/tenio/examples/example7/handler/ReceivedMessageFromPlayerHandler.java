@@ -40,8 +40,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
   @Override
   public void handle(Player player, ServerMessage message) {
     var position =
-        ((MsgPackMap) message.getData()).getMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION)
-            .toArray();
+        ((MsgPackMap) message.getData()).getMsgPackArray(SharedEventKey.KEY_DATA).toArray();
 
     player.setProperty(Example7Constant.PLAYER_POSITION_X, position[0]);
     player.setProperty(Example7Constant.PLAYER_POSITION_Y, position[1]);
@@ -49,14 +48,12 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
     var players = player.getCurrentRoom().get().getReadonlyPlayersList();
 
     var pack = msgarray();
-    var parray = msgarray();
-    parray.addString(player.getName());
-    parray.addInteger((int) position[0]);
-    parray.addInteger((int) position[1]);
+    pack.addString(player.getName());
+    pack.addInteger((int) position[0]);
+    pack.addInteger((int) position[1]);
 
-    pack.addMsgPackArray(parray);
-
-    var request = msgmap().putMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
+    var request = msgmap().putString(SharedEventKey.KEY_COMMAND, "m")
+        .putMsgPackArray(SharedEventKey.KEY_DATA, pack);
 
     response().setRecipientPlayers(players).setContent(request.toBinary()).write();
   }

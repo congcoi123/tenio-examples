@@ -44,7 +44,7 @@ public final class PlayerJoinedRoomHandler extends AbstractHandler
       var iterator = players.iterator();
 
       var pack = msgarray();
-      if (iterator.hasNext()) {
+      while (iterator.hasNext()) {
         var rplayer = iterator.next();
 
         var parray = msgarray();
@@ -55,7 +55,8 @@ public final class PlayerJoinedRoomHandler extends AbstractHandler
         pack.addMsgPackArray(parray);
       }
 
-      var message = msgmap().putMsgPackArray(SharedEventKey.KEY_PLAYER_POSITION, pack);
+      var message = msgmap().putString(SharedEventKey.KEY_COMMAND, "i")
+          .putMsgPackArray(SharedEventKey.KEY_DATA, pack);
 
       response().setRecipientPlayers(players).setContent(message.toBinary()).write();
     }
