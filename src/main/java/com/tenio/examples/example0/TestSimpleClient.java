@@ -22,10 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example1;
+package com.tenio.examples.example0;
 
 import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
+import com.tenio.common.data.zero.utility.ZeroUtility;
 import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
@@ -37,17 +38,13 @@ import com.tenio.examples.server.SharedEventKey;
  * 1. Create connections.<br>
  * 2. Send a login request.<br>
  * 3. Receive messages via TCP connection from the server.<br>
- * 4. Be logout by server. <br>
- * <br>
- * <b>[NOTE]</b> The client test is also available on <b>C++</b> and
- * <b>JavaScript</b> language, please see the <b>README.md</b> for more details
  */
-public final class TestClientLogin implements SocketListener {
+public final class TestSimpleClient implements SocketListener {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
 
-  public TestClientLogin() {
+  public TestSimpleClient() {
     // create a new TCP object and listen for this port
     tcp = new TCP(SOCKET_PORT);
     tcp.receive(this);
@@ -55,7 +52,7 @@ public final class TestClientLogin implements SocketListener {
     String name = ClientUtility.generateRandomString(5);
 
     // send a login request
-    var data = DataUtility.newMsgMap();
+    var data = ZeroUtility.newZeroMap();
     data.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
     tcp.send(ServerMessage.newInstance().setData(data));
 
@@ -66,12 +63,12 @@ public final class TestClientLogin implements SocketListener {
    * The entry point
    */
   public static void main(String[] args) {
-    new TestClientLogin();
+    new TestSimpleClient();
   }
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var dat = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
+    var dat = DataUtility.binaryToCollection(DataType.ZERO, binaries);
     var message = ServerMessage.newInstance().setData(dat);
 
     System.out.println("[RECV FROM SERVER TCP] -> " + message.getData().toString());
@@ -82,7 +79,7 @@ public final class TestClientLogin implements SocketListener {
       e.printStackTrace();
     }
 
-    var data = DataUtility.newMsgMap();
+    var data = ZeroUtility.newZeroMap();
     data.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "Hello from client");
     var request = ServerMessage.newInstance().setData(data);
     tcp.send(request);
