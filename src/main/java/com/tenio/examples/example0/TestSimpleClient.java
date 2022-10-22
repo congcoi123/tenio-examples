@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) 2016-2021 kong <congcoi123@gmail.com>
+Copyright (c) 2016-2022 kong <congcoi123@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ package com.tenio.examples.example0;
 
 import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
-import com.tenio.common.data.zero.utility.ZeroUtility;
 import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
@@ -52,7 +51,7 @@ public final class TestSimpleClient implements SocketListener {
     String name = ClientUtility.generateRandomString(5);
 
     // send a login request
-    var data = ZeroUtility.newZeroMap();
+    var data = DataUtility.newZeroMap();
     data.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
     tcp.send(ServerMessage.newInstance().setData(data));
 
@@ -79,7 +78,7 @@ public final class TestSimpleClient implements SocketListener {
       e.printStackTrace();
     }
 
-    var data = ZeroUtility.newZeroMap();
+    var data = DataUtility.newZeroMap();
     data.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "Hello from client");
     var request = ServerMessage.newInstance().setData(data);
     tcp.send(request);
