@@ -29,7 +29,7 @@ This project contains a collection of examples that show you how to manipulate t
 
 ## Dependencies
 ```txt
-- tenio-core 0.3.1
+- tenio-core 0.4.0
 - tenio-engine 0.2.0
 ```
 
@@ -66,7 +66,7 @@ public final class TestSimpleServer {
   /**
    * Create your own configurations.
    */
-  @Component
+  @Configured
   public static class TestConfiguration extends CoreConfiguration implements Configuration {
 
     @Override
@@ -82,7 +82,7 @@ public final class TestSimpleServer {
    * Define your handlers.
    */
 
-  @Component
+  @EventHandler
   public static class ConnectionEstablishedHandler extends AbstractHandler
       implements EventConnectionEstablishedResult {
 
@@ -96,8 +96,9 @@ public final class TestSimpleServer {
     }
   }
 
-  @Component
-  public static class PlayerLoggedInHandler extends AbstractHandler implements EventPlayerLoggedinResult {
+  @EventHandler
+  public static class PlayerLoggedInHandler extends AbstractHandler
+      implements EventPlayerLoggedinResult {
 
     @Override
     public void handle(Player player, PlayerLoggedInResult result) {
@@ -110,7 +111,7 @@ public final class TestSimpleServer {
     }
   }
 
-  @Component
+  @EventHandler
   public static class ReceivedMessageFromPlayerHandler extends AbstractHandler
       implements EventReceivedMessageFromPlayer {
 
@@ -170,6 +171,9 @@ $ java TestServerLogin configuration.example1.xml
     |-- example10
     |   |-- TestClientMsgPackEcho
     |   |-- TestServerMsgPackEcho
+    |-- example11
+    |   |-- TestClientCommand
+    |   |-- TestServerCommand
 ```
 
 > Happy coding !
