@@ -28,7 +28,7 @@ import com.tenio.common.configuration.Configuration;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.ApplicationLauncher;
 import com.tenio.core.bootstrap.annotation.Bootstrap;
-import com.tenio.core.bootstrap.annotation.Configured;
+import com.tenio.core.bootstrap.annotation.Setting;
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.configuration.CoreConfiguration;
 import com.tenio.core.entity.Player;
@@ -57,7 +57,7 @@ public final class TestServerCommand {
   /**
    * Create your own configurations.
    */
-  @Configured
+  @Setting
   public static class TestConfiguration extends CoreConfiguration implements Configuration {
 
     @Override

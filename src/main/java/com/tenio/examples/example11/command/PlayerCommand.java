@@ -26,7 +26,7 @@ package com.tenio.examples.example11.command;
 
 import com.tenio.core.bootstrap.annotation.Command;
 import com.tenio.core.command.AbstractCommandHandler;
-import com.tenio.core.command.CommandUtility;
+import com.tenio.core.utility.CommandUtility;
 import java.util.List;
 
 @Command(label = "player", usage = {

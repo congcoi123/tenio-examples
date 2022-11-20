@@ -25,8 +25,7 @@ THE SOFTWARE.
 package com.tenio.examples.example0;
 
 import com.tenio.core.bootstrap.annotation.Bootstrap;
-import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.core.bootstrap.annotation.Configured;
+import com.tenio.core.bootstrap.annotation.Setting;
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.common.configuration.Configuration;
 import com.tenio.common.data.zero.ZeroMap;
@@ -58,7 +57,7 @@ public final class TestSimpleServer {
   /**
    * Create your own configurations.
    */
-  @Configured
+  @Setting
   public static class TestConfiguration extends CoreConfiguration implements Configuration {
 
     @Override
