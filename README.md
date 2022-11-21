@@ -130,7 +130,7 @@ public final class TestSimpleServer {
 ```
 
 - Supports self-defined commands to interact with the server conveniently
-  - Usage
+1) Usage
   
 ```text
 2022-11-20 05:20:38,256 [main] INFO  com.tenio.core.server.ServerImpl - [SERVER][Example] Started
@@ -152,7 +152,7 @@ $ info player
 $ 
 ```
 
-  - Make sure to set the command usage flag in _**setting.json**_ file to be **enabled**
+2) Make sure to set the command usage flag in _**setting.json**_ file to be **enabled**
 
 ```JSON
 {
@@ -166,7 +166,7 @@ $
 }
 ``` 
 
-  - Simple implementation
+3) Simple implementation
 ```Java
 @Command(label = "player", usage = {
     "logout first"
