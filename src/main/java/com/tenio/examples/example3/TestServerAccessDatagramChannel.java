@@ -22,28 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example3.handler;
+package com.tenio.examples.example3;
 
-import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.core.entity.Player;
-import com.tenio.core.entity.define.result.AttachedConnectionResult;
-import com.tenio.core.handler.AbstractHandler;
-import com.tenio.core.handler.event.EventAttachedConnectionResult;
-import com.tenio.examples.server.SharedEventKey;
-import com.tenio.examples.server.UdpEstablishedState;
-import java.util.Optional;
+import com.tenio.core.bootstrap.annotation.Bootstrap;
+import com.tenio.core.ApplicationLauncher;
 
-@Component
-public final class AttachedConnectionHandler extends AbstractHandler
-    implements EventAttachedConnectionResult {
+/**
+ * This class shows how a server handle messages that came from a client.
+ */
+@Bootstrap
+public final class TestServerAccessDatagramChannel {
 
-  @Override
-  public void handle(Optional<Player> player, int kcpConv, AttachedConnectionResult result) {
-    if (result == AttachedConnectionResult.SUCCESS) {
-      var data = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH,
-          array().addByte(UdpEstablishedState.ATTACHED));
-
-      response().setContent(data.toBinary()).setRecipientPlayer(player.get()).write();
-    }
+  public static void main(String[] params) {
+    ApplicationLauncher.run(TestServerAccessDatagramChannel.class, params);
   }
 }

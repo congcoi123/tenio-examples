@@ -28,7 +28,6 @@ import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
 import com.tenio.common.data.zero.ZeroArray;
 import com.tenio.common.data.zero.ZeroMap;
-import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.DatagramListener;
 import com.tenio.examples.client.SocketListener;
@@ -47,14 +46,14 @@ import com.tenio.examples.server.UdpEstablishedState;
  * 5. Send messages via UDP connection and get these echoes from the server.<br>
  * 6. Close connections.
  */
-public final class TestClientAttach implements SocketListener, DatagramListener {
+public final class TestClientAccessDatagramChannel implements SocketListener, DatagramListener {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
   private final String playerName;
   private UDP udp;
 
-  public TestClientAttach() {
+  public TestClientAccessDatagramChannel() {
     playerName = ClientUtility.generateRandomString(5);
 
     // create a new TCP object and listen for this port
@@ -62,9 +61,8 @@ public final class TestClientAttach implements SocketListener, DatagramListener 
     tcp.receive(this);
 
     // send a login request
-    var data =
+    var message =
         DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    var message = ServerMessage.newInstance().setData(data);
     tcp.send(message);
 
     System.out.println("Login Request -> " + message);
@@ -74,23 +72,21 @@ public final class TestClientAttach implements SocketListener, DatagramListener 
    * The entry point.
    */
   public static void main(String[] args) {
-    new TestClientAttach();
+    new TestClientAccessDatagramChannel();
   }
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var dat = DataUtility.binaryToCollection(DataType.ZERO, binaries);
-    var message = ServerMessage.newInstance().setData(dat);
+    var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
     System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message.getData()).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
+    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
 
     switch (pack.getByte(0)) {
       case UdpEstablishedState.ALLOW_TO_ATTACH: {
         // now you can send request for UDP connection request
-        var data =
+        var request =
             DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-        var request = ServerMessage.newInstance().setData(data);
         // create a new UDP object and listen for this port
         udp = new UDP(pack.getInteger(1));
         udp.receive(this);
@@ -105,9 +101,8 @@ public final class TestClientAttach implements SocketListener, DatagramListener 
         System.out.println("Start the conversation ...");
 
         for (int i = 1; i <= 100; i++) {
-          var data = DataUtility.newZeroMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
+          var request = DataUtility.newZeroMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
               String.format("Hello from client %d", i));
-          var request = ServerMessage.newInstance().setData(data);
           udp.send(request);
 
           System.out.println("[SENT TO SERVER " + i + "] -> " + request);
@@ -128,8 +123,7 @@ public final class TestClientAttach implements SocketListener, DatagramListener 
 
   @Override
   public void onReceivedUDP(byte[] binary) {
-    var data = DataUtility.binaryToCollection(DataType.ZERO, binary);
-    var message = ServerMessage.newInstance().setData(data);
+    var message = DataUtility.binaryToCollection(DataType.ZERO, binary);
     System.err.println("[RECV FROM SERVER UDP] -> " + message);
   }
 }

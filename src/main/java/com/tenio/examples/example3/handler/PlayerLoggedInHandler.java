@@ -34,7 +34,7 @@ import com.tenio.examples.server.UdpEstablishedState;
 
 @Component
 public final class PlayerLoggedInHandler extends AbstractHandler
-    implements EventPlayerLoggedinResult {
+    implements EventPlayerLoggedinResult<Player> {
 
   @Override
   public void handle(Player player, PlayerLoggedInResult result) {

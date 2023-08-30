@@ -24,11 +24,11 @@ THE SOFTWARE.
 
 package com.tenio.examples.example6.handler;
 
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.common.utility.MathUtility;
+import com.tenio.core.bootstrap.annotation.Component;
 import com.tenio.core.entity.Player;
-import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
 import com.tenio.examples.server.SharedEventKey;
@@ -37,14 +37,14 @@ import java.util.List;
 
 @Component
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
-    implements EventReceivedMessageFromPlayer {
+    implements EventReceivedMessageFromPlayer<Player> {
 
   @Override
-  public void handle(Player player, ServerMessage message) {
+  public void handle(Player player, DataCollection message) {
     var data = map().putString(SharedEventKey.KEY_PLAYER_LOGIN, player.getName())
         .putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
             String.format("Echo(%s): %s", player.getName(),
-                ((ZeroMap) message.getData()).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)))
+                ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)))
         .putIntegerArray(SharedEventKey.KEY_INTEGER_ARRAY, getSortRandomNumberArray());
 
     response().setContent(data.toBinary()).setRecipientPlayer(player).write();
@@ -57,6 +57,6 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
       array.add(MathUtility.randInt(0, 100));
     }
 
-    return new ArrayList<Integer>(array);
+    return new ArrayList<>(array);
   }
 }

@@ -1,6 +1,6 @@
 {
 	"command": {
-		"enabled": true
+		"enabled": false
 	},
 	"plugin": {
 		"enabled": false,

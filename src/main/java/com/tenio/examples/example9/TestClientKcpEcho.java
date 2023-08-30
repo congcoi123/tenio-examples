@@ -24,12 +24,12 @@ THE SOFTWARE.
 
 package com.tenio.examples.example9;
 
+import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
 import com.tenio.common.data.zero.ZeroArray;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.configuration.kcp.KcpConfiguration;
-import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.core.network.entity.kcp.Ukcp;
 import com.tenio.core.network.entity.session.Session;
 import com.tenio.core.network.entity.session.manager.SessionManager;
@@ -78,9 +78,8 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
     networkWriterStatistic = NetworkWriterStatistic.newInstance();
 
     // send a login request
-    var data =
+    var message =
         DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    var message = ServerMessage.newInstance().setData(data);
     tcp.send(message);
 
     System.out.println("Login Request -> " + message);
@@ -94,9 +93,8 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
   }
 
   @Override
-  public void sessionRead(Session session, byte[] binary) {
-    System.out.println("[KCP SESSION READ] " + DataUtility.binaryToCollection(DataType.ZERO,
-        binary));
+  public void sessionRead(Session session, DataCollection message) {
+    System.out.println("[KCP SESSION READ] " + message);
   }
 
   @Override
@@ -112,6 +110,11 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
   @Override
   public void setNetworkReaderStatistic(NetworkReaderStatistic networkReaderStatistic) {
     // do nothing
+  }
+
+  @Override
+  public DataType getDataType() {
+    return DataType.ZERO;
   }
 
   @Override
@@ -131,18 +134,16 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var dat = DataUtility.binaryToCollection(DataType.ZERO, binaries);
-    var message = ServerMessage.newInstance().setData(dat);
+    var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
     System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message.getData()).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
+    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
 
     switch (pack.getByte(0)) {
       case UdpEstablishedState.ALLOW_TO_ATTACH: {
         // now you can send request for UDP connection request
-        var data =
+        var request =
             DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-        var request = ServerMessage.newInstance().setData(data);
         // create a new UDP object and listen for this port
         udp = new UDP(pack.getInteger(1));
         udp.receive(this);

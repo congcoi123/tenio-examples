@@ -24,11 +24,11 @@ THE SOFTWARE.
 
 package com.tenio.examples.example4.handler;
 
+import com.tenio.common.data.DataCollection;
+import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.bootstrap.annotation.AutowiredAcceptNull;
 import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.entity.Player;
-import com.tenio.core.entity.data.ServerMessage;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
 import com.tenio.engine.heartbeat.HeartBeatManager;
@@ -38,15 +38,14 @@ import com.tenio.examples.server.SharedEventKey;
 
 @Component
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
-    implements EventReceivedMessageFromPlayer {
+    implements EventReceivedMessageFromPlayer<Player> {
 
   @AutowiredAcceptNull
   private HeartBeatManager heartBeatManager;
 
   @Override
-  public void handle(Player player, ServerMessage message) {
-
-    var data = (ZeroMap) message.getData();
+  public void handle(Player player, DataCollection message) {
+    var data = (ZeroMap) message;
     if (data.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {
       var request = ExampleMessage.newInstance();
       request.putContent(ServerEventKey.KEY_PLAYER_NAME, player.getName());

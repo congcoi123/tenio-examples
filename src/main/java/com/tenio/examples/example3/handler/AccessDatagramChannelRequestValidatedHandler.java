@@ -22,18 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example3;
+package com.tenio.examples.example3.handler;
 
-import com.tenio.core.bootstrap.annotation.Bootstrap;
-import com.tenio.core.ApplicationLauncher;
+import com.tenio.common.data.DataCollection;
+import com.tenio.common.data.zero.ZeroMap;
+import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.entity.Player;
+import com.tenio.core.handler.AbstractHandler;
+import com.tenio.core.handler.event.EventAccessDatagramChannelRequestValidation;
+import com.tenio.examples.server.SharedEventKey;
+import java.util.Optional;
 
-/**
- * This class shows how a server handle messages that came from a client.
- */
-@Bootstrap
-public final class TestServerAttach {
+@Component
+public final class AccessDatagramChannelRequestValidatedHandler extends AbstractHandler
+    implements EventAccessDatagramChannelRequestValidation {
 
-  public static void main(String[] params) {
-    ApplicationLauncher.run(TestServerAttach.class, params);
+  @Override
+  public Optional<Player> handle(DataCollection message) {
+    var data = (ZeroMap) message;
+
+    return api().getPlayerByName(data.getString(SharedEventKey.KEY_PLAYER_LOGIN));
   }
 }

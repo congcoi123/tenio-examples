@@ -33,7 +33,7 @@ import com.tenio.examples.server.SharedEventKey;
 
 @Component
 public final class PlayerLoggedInHandler extends AbstractHandler
-    implements EventPlayerLoggedinResult {
+    implements EventPlayerLoggedinResult<Player> {
 
   @Override
   public void handle(Player player, PlayerLoggedInResult result) {

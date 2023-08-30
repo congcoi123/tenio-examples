@@ -22,25 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example9.handler;
+package com.tenio.examples.example4.handler;
 
 import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.entity.Player;
-import com.tenio.core.entity.data.ServerMessage;
+import com.tenio.core.entity.define.result.AccessDatagramChannelResult;
 import com.tenio.core.handler.AbstractHandler;
-import com.tenio.core.handler.event.EventAttachConnectionRequestValidation;
+import com.tenio.core.handler.event.EventAccessDatagramChannelRequestValidationResult;
 import com.tenio.examples.server.SharedEventKey;
+import com.tenio.examples.server.UdpEstablishedState;
 import java.util.Optional;
 
 @Component
-public final class AttachConnectionRequestValidatedHandler extends AbstractHandler
-    implements EventAttachConnectionRequestValidation {
+public final class AccessDatagramChannelValidationResultHandler extends AbstractHandler
+    implements EventAccessDatagramChannelRequestValidationResult<Player> {
 
   @Override
-  public Optional<Player> handle(ServerMessage message) {
-    var data = (ZeroMap) message.getData();
+  public void handle(Optional<Player> player, int udpConv, int kcpConv,
+                     AccessDatagramChannelResult result) {
+    if (result == AccessDatagramChannelResult.SUCCESS) {
+      var data = map().putByte(SharedEventKey.KEY_ALLOW_TO_ATTACH, UdpEstablishedState.ATTACHED);
 
-    return api().getPlayerByName(data.getString(SharedEventKey.KEY_PLAYER_LOGIN));
+      response().setContent(data.toBinary()).setRecipientPlayer(player.get()).write();
+    }
   }
 }

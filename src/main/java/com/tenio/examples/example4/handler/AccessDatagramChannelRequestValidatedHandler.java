@@ -22,32 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example8.handler;
+package com.tenio.examples.example4.handler;
 
+import com.tenio.common.data.DataCollection;
+import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.common.data.common.CommonMap;
+import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
-import com.tenio.core.handler.event.EventHttpRequestHandle;
-import com.tenio.core.network.define.RestMethod;
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
+import com.tenio.core.handler.event.EventAccessDatagramChannelRequestValidation;
+import com.tenio.examples.server.SharedEventKey;
+import java.util.Optional;
 
 @Component
-public final class HttpRequestHandler extends AbstractHandler implements EventHttpRequestHandle {
+public final class AccessDatagramChannelRequestValidatedHandler extends AbstractHandler
+    implements EventAccessDatagramChannelRequestValidation {
 
   @Override
-  public void handle(RestMethod method, HttpServletRequest request, HttpServletResponse response) {
-    var json = new JSONObject();
-    CommonMap.newInstance().add("status", "ok").add("message", "handler")
-        .forEach((key, value) -> {
-          json.put(key, value);
-        });
-    try {
-      response.getWriter().println(json);
-    } catch (IOException e) {
-      error(e, "handler");
-    }
+  public Optional<Player> handle(DataCollection message) {
+    var data = (ZeroMap) message;
+
+    return api().getPlayerByName(data.getString(SharedEventKey.KEY_PLAYER_LOGIN));
   }
 }

@@ -16,8 +16,8 @@
     <a href="CONTRIBUTING.md">
         <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://gitter.im/ten-io/community?source=orgpage">
-        <img src="https://badges.gitter.im/Join%20Chat.svg">
+    <a href="https://discord.gg/MGCxEwUR">
+        <img src="https://img.shields.io/discord/1146091189456613407">
     </a>
 </p>
 
@@ -29,12 +29,12 @@ This project contains a collection of examples that show you how to manipulate t
 
 ## Dependencies
 ```txt
-- tenio-core 0.4.0
-- tenio-engine 0.2.0
+- tenio-core 0.5.0
+- tenio-engine 0.5.0
 ```
 
 ## Requirements
-- Java 11
+- Java 17
 
 ## License
 The [`TenIO`](https://github.com/congcoi123/tenio) project is currently available under the [MIT](LICENSE) License.
@@ -216,8 +216,8 @@ $ java TestServerLogin configuration.example1.xml
     |-- example2
     |   |-- (*)TestFsmMechanism
     |-- example3
-    |   |-- TestClientAttach
-    |   |-- TestServerAttach
+    |   |-- TestClientAccessDatagramChannel
+    |   |-- TestServerAccessDatagramChannel
     |-- example4
     |   |-- TestClientMovement
     |   |-- TestServerMovement
