@@ -52,6 +52,7 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
   private final TCP tcp;
   private final String playerName;
   private UDP udp;
+  private int udpConvey;
 
   public TestClientAccessDatagramChannel() {
     playerName = ClientUtility.generateRandomString(5);
@@ -80,13 +81,16 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
     var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
     System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
+    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
     switch (pack.getByte(0)) {
-      case UdpEstablishedState.ALLOW_TO_ATTACH: {
+      case UdpEstablishedState.ALLOW_TO_ACCESS -> {
         // now you can send request for UDP connection request
+        var udpMessageData = DataUtility.newZeroMap();
+        udpMessageData.putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
         var request =
-            DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
+            DataUtility.newZeroMap().putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA,
+                udpMessageData);
         // create a new UDP object and listen for this port
         udp = new UDP(pack.getInteger(1));
         udp.receive(this);
@@ -94,15 +98,27 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
 
         System.out.println("Request a UDP connection -> " + request);
       }
-      break;
-
-      case UdpEstablishedState.ATTACHED: {
+      case UdpEstablishedState.ESTABLISHED -> {
+        udpConvey = pack.getInteger(1);
+        var udpMessageData = DataUtility.newZeroMap();
+        udpMessageData.putByte(SharedEventKey.KEY_COMMAND, UdpEstablishedState.ESTABLISHED);
+        var request = DataUtility.newZeroMap();
+        request.putInteger(SharedEventKey.KEY_UDP_CONVEY_ID, udpConvey);
+        request.putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA, udpMessageData);
+        udp.send(request);
+      }
+      case UdpEstablishedState.COMMUNICATING -> {
         // the UDP connected successful, you now can send test requests
         System.out.println("Start the conversation ...");
 
         for (int i = 1; i <= 100; i++) {
-          var request = DataUtility.newZeroMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
+          var udpMessageData = DataUtility.newZeroMap();
+          udpMessageData.putByte(SharedEventKey.KEY_COMMAND, UdpEstablishedState.COMMUNICATING);
+          udpMessageData.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
               String.format("Hello from client %d", i));
+          var request = DataUtility.newZeroMap();
+          request.putInteger(SharedEventKey.KEY_UDP_CONVEY_ID, udpConvey);
+          request.putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA, udpMessageData);
           udp.send(request);
 
           System.out.println("[SENT TO SERVER " + i + "] -> " + request);
@@ -117,7 +133,6 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
         tcp.close();
         udp.close();
       }
-      break;
     }
   }
 

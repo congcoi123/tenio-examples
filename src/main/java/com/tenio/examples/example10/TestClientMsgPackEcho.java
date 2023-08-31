@@ -136,10 +136,10 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
     var message = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
 
     System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    var pack = ((MsgPackMap) message).getMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
+    var pack = ((MsgPackMap) message).getMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
     switch (pack.getInteger(0)) {
-      case UdpEstablishedState.ALLOW_TO_ATTACH -> {
+      case UdpEstablishedState.ALLOW_TO_ACCESS -> {
         // now you can send request for UDP connection request
         var request =
             DataUtility.newMsgMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
@@ -152,7 +152,7 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
             udp.getLocalAddress().getHostAddress() + ", " + udp.getLocalPort() + " Request a UDP " +
                 "connection -> " + request);
       }
-      case UdpEstablishedState.ATTACHED -> {
+      case UdpEstablishedState.ESTABLISHED -> {
         // the UDP connected successful, you now can send test requests
         System.out.println("Start the conversation ...");
 

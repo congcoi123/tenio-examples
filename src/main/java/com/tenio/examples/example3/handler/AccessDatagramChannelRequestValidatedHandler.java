@@ -39,8 +39,8 @@ public final class AccessDatagramChannelRequestValidatedHandler extends Abstract
 
   @Override
   public Optional<Player> handle(DataCollection message) {
-    var data = (ZeroMap) message;
+    var request = (ZeroMap) message;
 
-    return api().getPlayerByName(data.getString(SharedEventKey.KEY_PLAYER_LOGIN));
+    return api().getPlayerByName(request.getString(SharedEventKey.KEY_PLAYER_LOGIN));
   }
 }

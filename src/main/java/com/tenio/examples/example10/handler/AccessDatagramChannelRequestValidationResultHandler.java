@@ -41,8 +41,8 @@ public final class AccessDatagramChannelRequestValidationResultHandler extends A
   public void handle(Optional<Player> player, int udpConv, int kcpConv,
                      AccessDatagramChannelResult result) {
     if (result == AccessDatagramChannelResult.SUCCESS) {
-      var data = msgmap().putMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ATTACH,
-          msgarray().addInteger(UdpEstablishedState.ATTACHED).addInteger(kcpConv));
+      var data = msgmap().putMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
+          msgarray().addInteger(UdpEstablishedState.ESTABLISHED).addInteger(kcpConv));
 
       response().setContent(data.toBinary()).setRecipientPlayer(player.get()).write();
     }

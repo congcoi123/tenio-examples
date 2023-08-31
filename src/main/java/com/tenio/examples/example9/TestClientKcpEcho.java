@@ -137,10 +137,10 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
     var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
     System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ATTACH);
+    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
     switch (pack.getByte(0)) {
-      case UdpEstablishedState.ALLOW_TO_ATTACH: {
+      case UdpEstablishedState.ALLOW_TO_ACCESS: {
         // now you can send request for UDP connection request
         var request =
             DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
@@ -155,7 +155,7 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
       }
       break;
 
-      case UdpEstablishedState.ATTACHED: {
+      case UdpEstablishedState.ESTABLISHED: {
         // the UDP connected successful, you now can send test requests
         System.out.println("Start the conversation ...");
 
