@@ -38,11 +38,11 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
 
   @Override
   public void handle(Player player, DataCollection message) {
-    var data =
+    var parcel =
         msgmap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
             player.getName(),
             ((MsgPackMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-    response().setContent(data.toBinary()).setRecipientPlayer(player).write();
+    response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
   }
 }

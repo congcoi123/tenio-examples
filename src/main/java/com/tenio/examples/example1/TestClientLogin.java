@@ -54,11 +54,11 @@ public final class TestClientLogin implements SocketListener {
     String name = ClientUtility.generateRandomString(5);
 
     // send a login request
-    var message = DataUtility.newMsgMap();
-    message.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
-    tcp.send(message);
+    var request = DataUtility.newMsgMap();
+    request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
+    tcp.send(request);
 
-    System.err.println("Login Request -> " + message);
+    System.err.println("Login Request -> " + request);
   }
 
   /**
@@ -70,9 +70,9 @@ public final class TestClientLogin implements SocketListener {
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var message = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
+    var parcel = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
 
-    System.out.println("[RECV FROM SERVER TCP] -> " + message.toString());
+    System.out.println("[RECV FROM SERVER TCP] -> " + parcel.toString());
 
     try {
       Thread.sleep(1000);

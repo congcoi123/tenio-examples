@@ -26,14 +26,14 @@ package com.tenio.examples.example3.handler;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
 import com.tenio.examples.server.SharedEventKey;
 import com.tenio.examples.server.UdpEstablishedState;
 
-@Component
+@EventHandler
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
     implements EventReceivedMessageFromPlayer<Player> {
 
@@ -54,7 +54,8 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
                 player.getName(),
                 ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-        response().setContent(parcel.toBinary()).setRecipientPlayer(player).prioritizedUdp().write();
+        response().setContent(parcel.toBinary()).setRecipientPlayer(player).prioritizedUdp()
+            .write();
       }
     }
   }

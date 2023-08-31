@@ -62,11 +62,11 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
     tcp.receive(this);
 
     // send a login request
-    var message =
+    var request =
         DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    tcp.send(message);
+    tcp.send(request);
 
-    System.out.println("Login Request -> " + message);
+    System.out.println("Login Request -> " + request);
   }
 
   /**
@@ -78,12 +78,12 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
+    var parcel = (ZeroMap) DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
-    System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
+    System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
+    ZeroArray udpParcel = parcel.getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
-    switch (pack.getByte(0)) {
+    switch (udpParcel.getByte(0)) {
       case UdpEstablishedState.ALLOW_TO_ACCESS -> {
         // now you can send request for UDP connection request
         var udpMessageData = DataUtility.newZeroMap();
@@ -92,14 +92,14 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
             DataUtility.newZeroMap().putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA,
                 udpMessageData);
         // create a new UDP object and listen for this port
-        udp = new UDP(pack.getInteger(1));
+        udp = new UDP(udpParcel.getInteger(1));
         udp.receive(this);
         udp.send(request);
 
         System.out.println("Request a UDP connection -> " + request);
       }
       case UdpEstablishedState.ESTABLISHED -> {
-        udpConvey = pack.getInteger(1);
+        udpConvey = udpParcel.getInteger(1);
         var udpMessageData = DataUtility.newZeroMap();
         udpMessageData.putByte(SharedEventKey.KEY_COMMAND, UdpEstablishedState.ESTABLISHED);
         var request = DataUtility.newZeroMap();
@@ -125,8 +125,8 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
 
           try {
             Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
+          } catch (InterruptedException exception) {
+            exception.printStackTrace();
           }
         }
 
@@ -138,7 +138,7 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
 
   @Override
   public void onReceivedUDP(byte[] binary) {
-    var message = DataUtility.binaryToCollection(DataType.ZERO, binary);
-    System.err.println("[RECV FROM SERVER UDP] -> " + message);
+    var parcel = DataUtility.binaryToCollection(DataType.ZERO, binary);
+    System.err.println("[RECV FROM SERVER UDP] -> " + parcel);
   }
 }

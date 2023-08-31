@@ -50,11 +50,11 @@ public final class TestSimpleClient implements SocketListener {
     String name = ClientUtility.generateRandomString(5);
 
     // send a login request
-    var message = DataUtility.newZeroMap();
-    message.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
-    tcp.send(message);
+    var request = DataUtility.newZeroMap();
+    request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
+    tcp.send(request);
 
-    System.err.println("Login Request -> " + message);
+    System.err.println("Login Request -> " + request);
   }
 
   /**
@@ -66,14 +66,14 @@ public final class TestSimpleClient implements SocketListener {
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
+    var parcel = DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
-    System.out.println("[RECV FROM SERVER TCP] -> " + message.toString());
+    System.out.println("[RECV FROM SERVER TCP] -> " + parcel.toString());
 
     try {
       Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    } catch (InterruptedException exception) {
+      exception.printStackTrace();
     }
 
     var request = DataUtility.newZeroMap();

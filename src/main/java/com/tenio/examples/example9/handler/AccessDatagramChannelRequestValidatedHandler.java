@@ -26,21 +26,21 @@ package com.tenio.examples.example9.handler;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventAccessDatagramChannelRequestValidation;
 import com.tenio.examples.server.SharedEventKey;
 import java.util.Optional;
 
-@Component
+@EventHandler
 public final class AccessDatagramChannelRequestValidatedHandler extends AbstractHandler
     implements EventAccessDatagramChannelRequestValidation {
 
   @Override
   public Optional<Player> handle(DataCollection message) {
-    var data = (ZeroMap) message;
+    var request = (ZeroMap) message;
 
-    return api().getPlayerByName(data.getString(SharedEventKey.KEY_PLAYER_LOGIN));
+    return api().getPlayerByName(request.getString(SharedEventKey.KEY_PLAYER_LOGIN));
   }
 }

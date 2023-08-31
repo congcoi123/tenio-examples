@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.tenio.examples.example9.handler;
 
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.entity.define.result.AccessDatagramChannelResult;
 import com.tenio.core.handler.AbstractHandler;
@@ -33,7 +33,7 @@ import com.tenio.examples.server.SharedEventKey;
 import com.tenio.examples.server.UdpEstablishedState;
 import java.util.Optional;
 
-@Component
+@EventHandler
 public final class AccessDatagramChannelRequestValidationResultHandler extends AbstractHandler
     implements EventAccessDatagramChannelRequestValidationResult<Player> {
 
@@ -41,10 +41,10 @@ public final class AccessDatagramChannelRequestValidationResultHandler extends A
   public void handle(Optional<Player> player, int udpConv, int kcpConv,
                      AccessDatagramChannelResult result) {
     if (result == AccessDatagramChannelResult.SUCCESS) {
-      var data = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
-          array().addByte(UdpEstablishedState.ESTABLISHED).addInteger(kcpConv));
+      var request = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
+          array().addByte(UdpEstablishedState.ESTABLISHED).addInteger(udpConv).addInteger(kcpConv));
 
-      response().setContent(data.toBinary()).setRecipientPlayer(player.get()).write();
+      response().setContent(request.toBinary()).setRecipientPlayer(player.get()).write();
     }
   }
 }

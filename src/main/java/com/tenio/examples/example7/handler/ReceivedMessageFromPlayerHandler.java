@@ -26,14 +26,14 @@ package com.tenio.examples.example7.handler;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.msgpack.element.MsgPackMap;
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
 import com.tenio.examples.example7.constant.Example7Constant;
 import com.tenio.examples.server.SharedEventKey;
 
-@Component
+@EventHandler
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
     implements EventReceivedMessageFromPlayer<Player> {
 
@@ -52,9 +52,9 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
     pack.addInteger((int) position[0]);
     pack.addInteger((int) position[1]);
 
-    var request = msgmap().putString(SharedEventKey.KEY_COMMAND, "m")
+    var parcel = msgmap().putString(SharedEventKey.KEY_COMMAND, "m")
         .putMsgPackArray(SharedEventKey.KEY_DATA, pack);
 
-    response().setRecipientPlayers(players).setContent(request.toBinary()).write();
+    response().setRecipientPlayers(players).setContent(parcel.toBinary()).write();
   }
 }

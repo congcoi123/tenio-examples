@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.tenio.examples.example3.handler;
 
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.entity.define.result.AccessDatagramChannelResult;
 import com.tenio.core.handler.AbstractHandler;
@@ -33,7 +33,7 @@ import com.tenio.examples.server.SharedEventKey;
 import com.tenio.examples.server.UdpEstablishedState;
 import java.util.Optional;
 
-@Component
+@EventHandler
 public final class AccessDatagramChannelRequestValidationResultHandler extends AbstractHandler
     implements EventAccessDatagramChannelRequestValidationResult<Player> {
 

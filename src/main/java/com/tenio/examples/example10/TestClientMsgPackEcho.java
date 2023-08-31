@@ -77,11 +77,11 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
     networkWriterStatistic = NetworkWriterStatistic.newInstance();
 
     // send a login request
-    var message =
+    var request =
         DataUtility.newMsgMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    tcp.send(message);
+    tcp.send(request);
 
-    System.out.println("Login Request -> " + message);
+    System.out.println("Login Request -> " + request);
   }
 
   /**
@@ -133,10 +133,10 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var message = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
+    var parcel = (MsgPackMap) DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
 
-    System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    var pack = ((MsgPackMap) message).getMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
+    System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
+    var pack = parcel.getMsgPackArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
     switch (pack.getInteger(0)) {
       case UdpEstablishedState.ALLOW_TO_ACCESS -> {
@@ -160,9 +160,9 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
         kcpProcessing();
 
         for (int i = 1; i <= 100; i++) {
-          var data = DataUtility.newMsgMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
+          var request = DataUtility.newMsgMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
               String.format("Hello from client %d", i));
-          ukcp.send(data.toBinary());
+          ukcp.send(request.toBinary());
 
           try {
             Thread.sleep(1000);

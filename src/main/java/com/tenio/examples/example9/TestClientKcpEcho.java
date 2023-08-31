@@ -65,6 +65,8 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
   private final String playerName;
   private final NetworkWriterStatistic networkWriterStatistic;
   private UDP udp;
+  private int udpConvey;
+  private int kcpConvey;
 
   public TestClientKcpEcho() {
     playerName = ClientUtility.generateRandomString(5);
@@ -78,11 +80,11 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
     networkWriterStatistic = NetworkWriterStatistic.newInstance();
 
     // send a login request
-    var message =
+    var request =
         DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    tcp.send(message);
+    tcp.send(request);
 
-    System.out.println("Login Request -> " + message);
+    System.out.println("Login Request -> " + request);
   }
 
   /**
@@ -134,18 +136,22 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
 
   @Override
   public void onReceivedTCP(byte[] binaries) {
-    var message = DataUtility.binaryToCollection(DataType.ZERO, binaries);
+    var parcel = (ZeroMap) DataUtility.binaryToCollection(DataType.ZERO, binaries);
 
-    System.err.println("[RECV FROM SERVER TCP] -> " + message);
-    ZeroArray pack = ((ZeroMap) message).getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
+    System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
+    ZeroArray udpParcel = parcel.getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
-    switch (pack.getByte(0)) {
-      case UdpEstablishedState.ALLOW_TO_ACCESS: {
+    switch (udpParcel.getByte(0)) {
+      case UdpEstablishedState.ALLOW_TO_ACCESS -> {
         // now you can send request for UDP connection request
+        // now you can send request for UDP connection request
+        var udpMessageData = DataUtility.newZeroMap();
+        udpMessageData.putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
         var request =
-            DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
+            DataUtility.newZeroMap().putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA,
+                udpMessageData);
         // create a new UDP object and listen for this port
-        udp = new UDP(pack.getInteger(1));
+        udp = new UDP(udpParcel.getInteger(1));
         udp.receive(this);
         udp.send(request);
 
@@ -153,19 +159,29 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
             udp.getLocalAddress().getHostAddress() + ", " + udp.getLocalPort() + " Request a UDP " +
                 "connection -> " + request);
       }
-      break;
-
-      case UdpEstablishedState.ESTABLISHED: {
+      case UdpEstablishedState.ESTABLISHED -> {
+        udpConvey = udpParcel.getInteger(1);
+        kcpConvey = udpParcel.getInteger(2);
+        var udpMessageData = DataUtility.newZeroMap();
+        udpMessageData.putByte(SharedEventKey.KEY_COMMAND, UdpEstablishedState.ESTABLISHED);
+        var request = DataUtility.newZeroMap();
+        request.putInteger(SharedEventKey.KEY_UDP_CONVEY_ID, udpConvey);
+        request.putZeroMap(SharedEventKey.KEY_UDP_MESSAGE_DATA, udpMessageData);
+        udp.send(request);
+      }
+      case UdpEstablishedState.COMMUNICATING -> {
         // the UDP connected successful, you now can send test requests
         System.out.println("Start the conversation ...");
 
-        var ukcp = initializeKcp(pack.getInteger(1));
+        var ukcp = initializeKcp(kcpConvey);
         kcpProcessing();
 
         for (int i = 1; i <= 100; i++) {
-          var data = DataUtility.newZeroMap().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
+          var request = DataUtility.newZeroMap();
+          request.putByte(SharedEventKey.KEY_COMMAND, UdpEstablishedState.COMMUNICATING);
+          request.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
               String.format("Hello from client %d", i));
-          ukcp.send(data.toBinary());
+          ukcp.send(request.toBinary());
 
           try {
             Thread.sleep(1000);
@@ -178,7 +194,6 @@ public final class TestClientKcpEcho implements SocketListener, DatagramListener
         udp.close();
         tcp.close();
       }
-      break;
     }
   }
 

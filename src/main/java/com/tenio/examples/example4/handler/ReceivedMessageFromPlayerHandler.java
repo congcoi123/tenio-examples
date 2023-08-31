@@ -27,7 +27,7 @@ package com.tenio.examples.example4.handler;
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.bootstrap.annotation.AutowiredAcceptNull;
-import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
@@ -35,8 +35,9 @@ import com.tenio.engine.heartbeat.HeartBeatManager;
 import com.tenio.examples.example4.constant.ServerEventKey;
 import com.tenio.examples.server.ExampleMessage;
 import com.tenio.examples.server.SharedEventKey;
+import com.tenio.examples.server.UdpEstablishedState;
 
-@Component
+@EventHandler
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
     implements EventReceivedMessageFromPlayer<Player> {
 
@@ -45,14 +46,25 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
 
   @Override
   public void handle(Player player, DataCollection message) {
-    var data = (ZeroMap) message;
-    if (data.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {
-      var request = ExampleMessage.newInstance();
-      request.putContent(ServerEventKey.KEY_PLAYER_NAME, player.getName());
-      request.putContent(ServerEventKey.KEY_PLAYER_REQUEST,
-          data.getString(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS));
+    var request = (ZeroMap) message;
+    byte command = request.getByte(SharedEventKey.KEY_COMMAND);
+    switch (command) {
+      case UdpEstablishedState.ESTABLISHED -> {
+        var parcel = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
+            array().addByte(UdpEstablishedState.COMMUNICATING));
 
-      heartBeatManager.sendMessage("world", request);
+        response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+      }
+      case UdpEstablishedState.COMMUNICATING -> {
+        if (request.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {
+          var parcel = ExampleMessage.newInstance();
+          parcel.putContent(ServerEventKey.KEY_PLAYER_NAME, player.getName());
+          parcel.putContent(ServerEventKey.KEY_PLAYER_REQUEST,
+              request.getString(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS));
+
+          heartBeatManager.sendMessage("world", parcel);
+        }
+      }
     }
   }
 }

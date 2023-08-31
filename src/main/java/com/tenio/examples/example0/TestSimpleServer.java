@@ -81,9 +81,9 @@ public final class TestSimpleServer {
     public void handle(Session session, DataCollection message,
                        ConnectionEstablishedResult result) {
       if (result == ConnectionEstablishedResult.SUCCESS) {
-        var data = (ZeroMap) message;
+        var request = (ZeroMap) message;
 
-        api().login(data.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
+        api().login(request.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
       }
     }
   }
@@ -95,10 +95,10 @@ public final class TestSimpleServer {
     @Override
     public void handle(Player player, PlayerLoggedInResult result) {
       if (result == PlayerLoggedInResult.SUCCESS) {
-        var data = map().putString(SharedEventKey.KEY_PLAYER_LOGIN,
+        var parcel = map().putString(SharedEventKey.KEY_PLAYER_LOGIN,
             String.format("Welcome to server: %s", player.getName()));
 
-        response().setContent(data.toBinary()).setRecipientPlayer(player).write();
+        response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
       }
     }
   }
@@ -109,12 +109,12 @@ public final class TestSimpleServer {
 
     @Override
     public void handle(Player player, DataCollection message) {
-      var data =
+      var parcel =
           map().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
               player.getName(),
               ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-      response().setContent(data.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
     }
   }
 }
