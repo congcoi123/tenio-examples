@@ -39,7 +39,6 @@
 			<Property name="packet-compression-threshold-bytes">10240</Property>
 			<Property name="allow-change-session">false</Property>
 			<Property name="max-connections-per-ip">1000</Property>
-			<Property name="enabled-kcp">false</Property>
 		</Properties>
 	</Network>
 
