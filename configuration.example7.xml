@@ -51,7 +51,6 @@
 			<Worker name="websocket-consumer">2</Worker>
 			<Worker name="http-worker">8</Worker>
 			<Worker name="internal-processor">2</Worker>
-			<Worker name="udp-worker">0</Worker>
 		</Workers>
 		<Schedules>
 			<!-- Get the period checking in seconds which server can keep the empty 

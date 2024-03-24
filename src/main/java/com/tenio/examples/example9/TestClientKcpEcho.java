@@ -137,7 +137,7 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
           }
         }
 
-        ukcp.close();
+        ukcp.close("Manually Closed");
         tcp.close();
       }
     }
@@ -173,7 +173,7 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
   }
 
   @Override
-  public void handleClose(Ukcp ukcp) {
+  public void handleClose(Ukcp ukcp, String reason) {
     // Do nothing
   }
 }
