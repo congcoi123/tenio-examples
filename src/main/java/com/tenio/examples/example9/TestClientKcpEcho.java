@@ -30,7 +30,6 @@ import com.tenio.common.data.DataUtility;
 import com.tenio.common.data.zero.ZeroArray;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.network.entity.session.Session;
-import com.tenio.core.network.statistic.NetworkWriterStatistic;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
 import com.tenio.examples.client.TCP;
@@ -59,9 +58,7 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
-  private final Session session;
   private final String playerName;
-  private final NetworkWriterStatistic networkWriterStatistic;
   private Ukcp ukcp;
 
   public TestClientKcpEcho() {
@@ -70,10 +67,8 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
     // create a new TCP object and listen for this port
     tcp = new TCP(SOCKET_PORT);
     tcp.receive(this);
-    session = tcp.getSession();
+    Session session = tcp.getSession();
     session.setName(playerName);
-
-    networkWriterStatistic = NetworkWriterStatistic.newInstance();
 
     // send a login request
     var request =
@@ -137,7 +132,7 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
           }
         }
 
-        ukcp.close("Manually Closed");
+        ukcp.close();
         tcp.close();
       }
     }
@@ -173,7 +168,7 @@ public final class TestClientKcpEcho implements SocketListener, KcpListener {
   }
 
   @Override
-  public void handleClose(Ukcp ukcp, String reason) {
+  public void handleClose(Ukcp ukcp) {
     // Do nothing
   }
 }
