@@ -19,7 +19,7 @@
 	<Network>
 		<Sockets>
 			<Port name="tcp" type="tcp">8032</Port>
-			<Port name="udp" type="udp">20004,20005,20006,20007,20008,20009</Port>
+			<Port name="udp" type="udp" cacheSize="10">20004</Port>
 		</Sockets>
 		<Properties>
 			<Property name="websocket-using-ssl">false</Property>
