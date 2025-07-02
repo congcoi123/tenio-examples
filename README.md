@@ -30,7 +30,7 @@ This project contains a collection of examples that show you how to manipulate t
 ## Dependencies
 ```txt
 - tenio-core 0.6.5
-- tenio-engine 0.6.2
+- tenio-engine 0.6.3
 ```
 
 ## Requirements
