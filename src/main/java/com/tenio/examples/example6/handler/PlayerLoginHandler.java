@@ -22,28 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example4.handler;
+package com.tenio.examples.example6.handler;
 
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
-import com.tenio.core.entity.define.result.PlayerLoggedInResult;
+import com.tenio.core.entity.define.result.PlayerLoginResult;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventPlayerLoginResult;
-import com.tenio.examples.server.DatagramEstablishedState;
 import com.tenio.examples.server.SharedEventKey;
 
 @EventHandler
-public final class PlayerLoggedInHandler extends AbstractHandler
+public final class PlayerLoginHandler extends AbstractHandler
     implements EventPlayerLoginResult<Player> {
 
   @Override
-  public void handle(Player player, PlayerLoggedInResult result) {
-    if (result == PlayerLoggedInResult.SUCCESS) {
+  public void handle(Player player, PlayerLoginResult result) {
+    if (result == PlayerLoginResult.SUCCESS) {
       player.setNeverDeported(true);
-      var parcel =
-          map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
-              array().addByte(DatagramEstablishedState.ALLOW_TO_ACCESS)
-                  .addInteger(api().getUdpPort()));
+      var parcel = map()
+          .putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
+              String.format("Welcome to server: %s", player.getIdentity()))
+          .putString(SharedEventKey.KEY_PLAYER_LOGIN, player.getIdentity());
 
       response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
     }
