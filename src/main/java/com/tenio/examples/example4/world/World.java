@@ -459,8 +459,10 @@ public final class World extends AbstractHeartBeat {
             }
 
           }, "update-vehicles-position");
-        } catch (Exception e) {
-          error(e);
+        } catch (Exception exception) {
+          if (isErrorEnabled()) {
+            error(exception);
+          }
         }
       }
 
@@ -519,8 +521,10 @@ public final class World extends AbstractHeartBeat {
         List<Vehicle> neighbours = getNeighboursOf(entityId);
         worldListener.responseVehicleNeighbours(name, neighbours, getFps());
       }, name);
-    } catch (Exception e) {
-      error(e);
+    } catch (Exception exception) {
+      if (isErrorEnabled()) {
+        error(exception);
+      }
     }
   }
 
