@@ -92,7 +92,7 @@ public final class World extends AbstractHeartBeat {
     enableRenderNeighbors = false;
     enableViewKeys = false;
     enableShowCellSpaceInfo = false;
-    workerPool = new WorkerPool("world", 150, 300);
+    workerPool = new WorkerPool("world", 16, 300);
 
     // set up the spatial subdivision class
     cellSpace = new CellSpacePartition<>((float) cx, (float) cy, paramLoader.NUM_CELLS_X,
