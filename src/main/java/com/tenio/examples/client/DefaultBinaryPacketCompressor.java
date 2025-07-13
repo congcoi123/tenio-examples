@@ -22,22 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example1.configuration.codec;
+package com.tenio.examples.client;
 
-import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.core.exception.PacketEncryptorException;
-import com.tenio.core.network.zero.codec.encryption.BinaryPacketEncryptor;
+import com.tenio.core.network.zero.codec.compression.BinaryPacketCompressor;
 
-@Component
-public final class CustomBinaryPacketEncryptor implements BinaryPacketEncryptor {
+/**
+ * The default implementation of the binary packet compressor.
+ *
+ * @see BinaryPacketCompressor
+ */
+public final class DefaultBinaryPacketCompressor implements BinaryPacketCompressor {
 
   @Override
-  public byte[] encrypt(byte[] binary) throws PacketEncryptorException {
+  public byte[] compress(byte[] binary) {
     return binary;
   }
 
   @Override
-  public byte[] decrypt(byte[] binary) throws PacketEncryptorException {
+  public byte[] uncompress(byte[] binary) {
     return binary;
   }
 }

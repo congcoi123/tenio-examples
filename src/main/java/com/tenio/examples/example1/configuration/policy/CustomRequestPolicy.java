@@ -22,22 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.tenio.examples.example1.configuration.codec;
+package com.tenio.examples.example1.configuration.policy;
 
 import com.tenio.core.bootstrap.annotation.Component;
-import com.tenio.core.exception.PacketEncryptorException;
-import com.tenio.core.network.zero.codec.encryption.BinaryPacketEncryptor;
+import com.tenio.core.network.entity.protocol.Request;
+import com.tenio.core.network.entity.protocol.policy.RequestPolicy;
 
 @Component
-public final class CustomBinaryPacketEncryptor implements BinaryPacketEncryptor {
+public final class CustomRequestPolicy implements RequestPolicy {
 
   @Override
-  public byte[] encrypt(byte[] binary) throws PacketEncryptorException {
-    return binary;
-  }
-
-  @Override
-  public byte[] decrypt(byte[] binary) throws PacketEncryptorException {
-    return binary;
+  public void applyPolicy(Request request) {
   }
 }
