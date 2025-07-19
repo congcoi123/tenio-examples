@@ -27,7 +27,6 @@ package com.tenio.examples.client;
 import com.tenio.common.data.DataCollection;
 import com.tenio.core.network.entity.packet.implement.PacketImpl;
 import com.tenio.core.network.entity.session.Session;
-import com.tenio.core.network.entity.session.implement.SessionImpl;
 import com.tenio.core.network.zero.codec.decoder.BinaryPacketDecoder;
 import com.tenio.core.network.zero.codec.decoder.BinaryPacketDecoderImpl;
 import com.tenio.core.network.zero.codec.decoder.PacketDecoderResultListener;
@@ -72,7 +71,7 @@ public final class TCP implements PacketDecoderResultListener {
       dataInputStream = new DataInputStream(socket.getInputStream());
       byteArrayOutputStream = new ByteArrayOutputStream();
 
-      session = SessionImpl.newInstanceForTcp();
+      session = new CustomSession();
 
       var binaryCompressor = new DefaultBinaryPacketCompressor();
       var binaryEncryptor = new DefaultBinaryPacketEncryptor();
