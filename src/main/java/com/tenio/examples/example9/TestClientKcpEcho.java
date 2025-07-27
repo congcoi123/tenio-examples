@@ -153,7 +153,7 @@ public final class TestClientKcpEcho implements SocketListener<ZeroMap>, KcpList
     var binary = new byte[byteBuf.readableBytes()];
     byteBuf.getBytes(byteBuf.readerIndex(), binary);
 
-    var message = DataUtility.binaryToCollection(DataType.ZERO, binary);
+    var message = DataUtility.binariesToCollection(DataType.ZERO, binary);
 
     System.out.println("[KCP RECEIVE] " + message);
   }
