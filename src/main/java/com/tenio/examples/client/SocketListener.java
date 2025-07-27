@@ -33,7 +33,7 @@ import com.tenio.common.data.DataCollection;
 public interface SocketListener<D extends DataCollection> {
 
   /**
-   * Listen for a new message.
+   * Listen to a new message.
    *
    * @param message the received {@link D} message
    */

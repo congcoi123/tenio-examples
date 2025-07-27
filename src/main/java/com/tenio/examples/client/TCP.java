@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  * Create an object for handling a socket connection. It is used to send
@@ -63,9 +64,10 @@ public final class TCP implements PacketFramingListener {
   /**
    * Listen in a port on the local machine.
    *
-   * @param port the desired port
+   * @param port      the desired port
+   * @param onSuccess TCP connected successfully
    */
-  public TCP(int port) {
+  public TCP(int port, Consumer<TCP> onSuccess) {
     try {
       socket = new Socket(LOCAL_HOST, port);
       dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -88,6 +90,8 @@ public final class TCP implements PacketFramingListener {
       binaryPacketFramer = new BinaryPacketFramer();
       binaryPacketFramer.setBinaryPacketDecoder(binaryPacketDecoder);
       binaryPacketFramer.setPacketFramingResult(this);
+
+      onSuccess.accept(this);
     } catch (IOException exception) {
       exception.printStackTrace();
     }
@@ -103,15 +107,15 @@ public final class TCP implements PacketFramingListener {
    * @param message the desired message
    */
   public void send(DataCollection message) {
-    // convert message object to bytes data
+    // convert message object to binaries data
     var packet = PacketImpl.newInstance();
     packet.setDataType(message.getType());
     packet.setData(message.toBinaries());
     packet = binaryPacketEncoder.encode(packet, true);
     // attach the packet's length to packet's header
-    var bytes = packet.getData();
+    var binaries = packet.getData();
     try {
-      dataOutputStream.write(bytes);
+      dataOutputStream.write(binaries);
       dataOutputStream.flush();
     } catch (IOException exception) {
       exception.printStackTrace();
@@ -119,7 +123,7 @@ public final class TCP implements PacketFramingListener {
   }
 
   /**
-   * Listen for messages that came from the server.
+   * Listen to messages that came from the server.
    *
    * @param listener the socket listener
    */
@@ -127,12 +131,12 @@ public final class TCP implements PacketFramingListener {
     socketListener = listener;
     var executorService = Executors.newSingleThreadExecutor();
     future = executorService.submit(() -> {
-      var binary = new byte[DEFAULT_BYTE_BUFFER_SIZE];
+      var binaries = new byte[DEFAULT_BYTE_BUFFER_SIZE];
       int readBytes;
       try {
-        while ((readBytes = dataInputStream.read(binary, 0, binary.length)) != -1) {
+        while ((readBytes = dataInputStream.read(binaries, 0, binaries.length)) != -1) {
           byteArrayOutputStream.reset();
-          byteArrayOutputStream.write(binary, 0, readBytes);
+          byteArrayOutputStream.write(binaries, 0, readBytes);
           binaryPacketFramer.framing(session, byteArrayOutputStream.toByteArray());
         }
       } catch (IOException | RuntimeException exception) {

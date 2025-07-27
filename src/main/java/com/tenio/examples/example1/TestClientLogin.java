@@ -47,18 +47,19 @@ public final class TestClientLogin implements SocketListener<DataCollection> {
   private final TCP tcp;
 
   public TestClientLogin() {
-    // create a new TCP object and listen for this port
-    tcp = new TCP(SOCKET_PORT);
-    tcp.receive(this);
+    // create a new TCP object and listen to this port
+    tcp = new TCP(SOCKET_PORT, it -> {
+      it.receive(TestClientLogin.this);
 
-    String name = ClientUtility.generateRandomString(5);
+      String name = ClientUtility.generateRandomString(5);
 
-    // send a login request
-    var request = DataUtility.newMsgMap();
-    request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
-    tcp.send(request);
+      // send a login request
+      var request = DataUtility.newMsgMap();
+      request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
+      it.send(request);
 
-    System.err.println("Login Request -> " + request);
+      System.err.println("Login Request -> " + request);
+    });
   }
 
   /**

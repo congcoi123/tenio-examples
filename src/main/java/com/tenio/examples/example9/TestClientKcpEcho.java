@@ -62,18 +62,19 @@ public final class TestClientKcpEcho implements SocketListener<ZeroMap>, KcpList
   public TestClientKcpEcho() {
     playerName = ClientUtility.generateRandomString(5);
 
-    // create a new TCP object and listen for this port
-    tcp = new TCP(SOCKET_PORT);
-    tcp.receive(this);
-    Session session = tcp.getSession();
-    session.setName(playerName);
+    // create a new TCP object and listen to this port
+    tcp = new TCP(SOCKET_PORT, it -> {
+      it.receive(TestClientKcpEcho.this);
+      Session session = it.getSession();
+      session.setName(playerName);
 
-    // send a login request
-    var request =
-        DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
-    tcp.send(request);
+      // send a login request
+      var request =
+          DataUtility.newZeroMap().putString(SharedEventKey.KEY_PLAYER_LOGIN, playerName);
+      it.send(request);
 
-    System.out.println("Login Request -> " + request);
+      System.out.println("Login Request -> " + request);
+    });
   }
 
   /**

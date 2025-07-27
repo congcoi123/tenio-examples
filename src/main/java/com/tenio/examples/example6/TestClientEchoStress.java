@@ -56,19 +56,20 @@ public final class TestClientEchoStress implements SocketListener<ZeroMap> {
 
   public TestClientEchoStress() {
     tcps = new HashMap<>();
-    // create a list of TCP objects and listen for this port
+    // create a list of TCP objects and listen to this port
     for (int i = 0; i < NUMBER_CLIENTS; i++) {
       var name = ClientUtility.generateRandomString(5);
-      var tcp = new TCP(SOCKET_PORT);
-      tcp.receive(this);
-      tcps.put(name, tcp);
+      var tcp = new TCP(SOCKET_PORT, it -> {
+        it.receive(TestClientEchoStress.this);
+        tcps.put(name, it);
 
-      // send a login request
-      var request = DataUtility.newZeroMap();
-      request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
-      tcp.send(request);
+        // send a login request
+        var request = DataUtility.newZeroMap();
+        request.putString(SharedEventKey.KEY_PLAYER_LOGIN, name);
+        it.send(request);
 
-      System.err.println("Login Request -> " + request);
+        System.err.println("Login Request -> " + request);
+      });
     }
   }
 
