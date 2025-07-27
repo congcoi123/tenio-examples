@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.tenio.examples.example11;
 
-import com.tenio.common.data.DataType;
+import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.DataUtility;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
@@ -37,7 +37,7 @@ import com.tenio.examples.server.SharedEventKey;
  * 2. Send a login request.<br>
  * 3. Receive messages via TCP connection from the server.<br>
  */
-public final class TestClientCommand implements SocketListener {
+public final class TestClientCommand implements SocketListener<DataCollection> {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
@@ -65,9 +65,7 @@ public final class TestClientCommand implements SocketListener {
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = DataUtility.binaryToCollection(DataType.ZERO, binaries);
-
+  public void onReceivedTCP(DataCollection parcel) {
     System.out.println("[RECV FROM SERVER TCP] -> " + parcel.toString());
 
     try {

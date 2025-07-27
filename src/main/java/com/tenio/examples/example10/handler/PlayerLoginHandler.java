@@ -43,7 +43,7 @@ public final class PlayerLoginHandler extends AbstractHandler
           msgmap().putIntegerArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
               new int[] { DatagramEstablishedState.ALLOW_TO_ACCESS, api().getUdpPort() });
 
-      response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(parcel).setRecipientPlayer(player).write();
     }
   }
 }

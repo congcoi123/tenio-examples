@@ -44,7 +44,7 @@ public final class PlayerLoginHandler extends AbstractHandler
               array().addByte(DatagramEstablishedState.ALLOW_TO_ACCESS)
                   .addInteger(api().getUdpPort()));
 
-      response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(parcel).setRecipientPlayer(player).write();
     }
   }
 }

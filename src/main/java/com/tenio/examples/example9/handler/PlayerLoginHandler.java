@@ -43,7 +43,7 @@ public final class PlayerLoginHandler extends AbstractHandler
           map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_KCP_CHANNEL,
               array().addByte(DatagramEstablishedState.ALLOW_TO_ACCESS));
 
-      response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(parcel).setRecipientPlayer(player).write();
     }
   }
 }

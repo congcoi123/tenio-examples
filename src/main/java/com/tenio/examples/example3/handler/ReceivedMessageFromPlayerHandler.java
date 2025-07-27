@@ -46,7 +46,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
         var parcel = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
             array().addByte(DatagramEstablishedState.COMMUNICATING));
 
-        response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+        response().setContent(parcel).setRecipientPlayer(player).write();
       }
       case DatagramEstablishedState.COMMUNICATING -> {
         var parcel =
@@ -54,8 +54,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
                 player.getIdentity(),
                 ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-        response().setContent(parcel.toBinary()).setRecipientPlayer(player).prioritizedUdp()
-            .write();
+        response().setContent(parcel).setRecipientPlayer(player).prioritizedUdp().write();
       }
     }
   }

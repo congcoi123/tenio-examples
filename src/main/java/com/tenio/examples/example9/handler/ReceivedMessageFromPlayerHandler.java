@@ -47,7 +47,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
               player.getIdentity(),
               ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-      response().setContent(parcel.toBinary()).setRecipientPlayer(player).prioritizedKcp().write();
+      response().setContent(parcel).setRecipientPlayer(player).prioritizedKcp().write();
     }
   }
 }

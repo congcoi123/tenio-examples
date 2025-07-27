@@ -47,7 +47,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
                 ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)))
         .putIntegerArray(SharedEventKey.KEY_INTEGER_ARRAY, getSortRandomNumberArray());
 
-    response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+    response().setContent(parcel).setRecipientPlayer(player).write();
   }
 
   private List<Integer> getSortRandomNumberArray() {

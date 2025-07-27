@@ -26,6 +26,9 @@ package com.tenio.examples.client;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.utility.OsUtility;
+import com.tenio.core.network.codec.encoder.BinaryPacketEncoder;
+import com.tenio.core.network.codec.encoder.BinaryPacketEncoderImpl;
+import com.tenio.core.network.entity.packet.implement.PacketImpl;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -47,6 +50,7 @@ public final class UDP {
    * The desired port for listening.
    */
   private final int port;
+  private final BinaryPacketEncoder binaryPacketEncoder;
   private Future<?> future;
   private DatagramSocket datagramSocket;
   private InetAddress inetAddress;
@@ -69,15 +73,22 @@ public final class UDP {
       } else {
         datagramSocket = new DatagramSocket();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException exception) {
+      exception.printStackTrace();
     }
     try {
       inetAddress = InetAddress.getLocalHost();
-    } catch (UnknownHostException e) {
-      e.printStackTrace();
+    } catch (UnknownHostException exception) {
+      exception.printStackTrace();
     }
     this.port = port;
+
+    var binaryCompressor = new DefaultBinaryPacketCompressor();
+    var binaryEncryptor = new DefaultBinaryPacketEncryptor();
+
+    binaryPacketEncoder = new BinaryPacketEncoderImpl();
+    binaryPacketEncoder.setCompressor(binaryCompressor);
+    binaryPacketEncoder.setEncryptor(binaryEncryptor);
   }
 
   public UDP(int port) {
@@ -106,12 +117,17 @@ public final class UDP {
    * @param message the desired message
    */
   public void send(DataCollection message) {
-    var pack = message.toBinary();
-    var request = new DatagramPacket(pack, pack.length, inetAddress, port);
+    // convert message object to bytes data
+    var packet = PacketImpl.newInstance();
+    packet.setDataType(message.getType());
+    packet.setData(message.toBinaries());
+    packet = binaryPacketEncoder.encode(packet, false);
+    var sendingPacket = packet.getData();
+    var request = new DatagramPacket(sendingPacket, sendingPacket.length, inetAddress, port);
     try {
       datagramSocket.send(request);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException exception) {
+      exception.printStackTrace();
     }
   }
 
@@ -129,8 +145,8 @@ public final class UDP {
           var response = new DatagramPacket(buffer, buffer.length);
           datagramSocket.receive(response);
           listener.onReceivedUDP(buffer);
-        } catch (IOException e) {
-          e.printStackTrace();
+        } catch (IOException exception) {
+          exception.printStackTrace();
           return;
         }
       }

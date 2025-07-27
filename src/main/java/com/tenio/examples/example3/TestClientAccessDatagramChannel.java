@@ -46,7 +46,8 @@ import com.tenio.examples.server.SharedEventKey;
  * 5. Send messages via UDP connection and get these echoes from the server.<br>
  * 6. Close connections.
  */
-public final class TestClientAccessDatagramChannel implements SocketListener, DatagramListener {
+public final class TestClientAccessDatagramChannel implements SocketListener<ZeroMap>,
+    DatagramListener {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
@@ -77,9 +78,7 @@ public final class TestClientAccessDatagramChannel implements SocketListener, Da
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = (ZeroMap) DataUtility.binaryToCollection(DataType.ZERO, binaries);
-
+  public void onReceivedTCP(ZeroMap parcel) {
     System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
     ZeroArray udpParcel = parcel.getZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 

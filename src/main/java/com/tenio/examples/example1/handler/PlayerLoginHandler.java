@@ -41,7 +41,7 @@ public final class PlayerLoginHandler extends AbstractHandler
       var request = msgmap().putString(SharedEventKey.KEY_PLAYER_LOGIN,
           String.format("Welcome to server: %s", player.getIdentity()));
 
-      response().setContent(request.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(request).setRecipientPlayer(player).write();
     }
   }
 }

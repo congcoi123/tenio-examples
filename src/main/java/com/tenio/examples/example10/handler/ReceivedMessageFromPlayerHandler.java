@@ -43,6 +43,6 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
             player.getIdentity(),
             ((MsgPackMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-    response().setContent(parcel.toBinary()).setRecipientPlayer(player).prioritizedUdp().write();
+    response().setContent(parcel).setRecipientPlayer(player).prioritizedUdp().write();
   }
 }

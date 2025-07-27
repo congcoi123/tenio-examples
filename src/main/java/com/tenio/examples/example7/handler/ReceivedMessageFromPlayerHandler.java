@@ -52,6 +52,6 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
         .putString(SharedEventKey.KEY_USER, player.getIdentity())
         .putIntegerArray(SharedEventKey.KEY_DATA, new int[] { positions[0], positions[1] });
 
-    response().setRecipientPlayers(players).setContent(parcel.toBinary()).write();
+    response().setRecipientPlayers(players).setContent(parcel).write();
   }
 }

@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.tenio.examples.example6;
 
-import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.examples.client.ClientUtility;
@@ -45,7 +44,7 @@ import java.util.Map;
  * <code>JavaScript</code> language, please see the <code>README.md</code> for
  * more details
  */
-public final class TestClientEchoStress implements SocketListener {
+public final class TestClientEchoStress implements SocketListener<ZeroMap> {
 
   private static final int SOCKET_PORT = 8032;
   private static final int NUMBER_CLIENTS = 5000;
@@ -81,21 +80,18 @@ public final class TestClientEchoStress implements SocketListener {
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = DataUtility.binaryToCollection(DataType.ZERO, binaries);
-
+  public void onReceivedTCP(ZeroMap parcel) {
     if (ENABLED_DEBUG) {
       System.out.println("[RECV FROM SERVER TCP] -> " + parcel);
     }
 
     try {
       Thread.sleep(100);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    } catch (InterruptedException exception) {
+      exception.printStackTrace();
     }
 
-    var tcp =
-        tcps.get(((ZeroMap) parcel).getString(SharedEventKey.KEY_PLAYER_LOGIN));
+    var tcp = tcps.get(parcel.getString(SharedEventKey.KEY_PLAYER_LOGIN));
 
     // make an echo message
     var request = DataUtility.newZeroMap();

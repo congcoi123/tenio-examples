@@ -98,7 +98,7 @@ public final class TestSimpleServer {
         var parcel = map().putString(SharedEventKey.KEY_PLAYER_LOGIN,
             String.format("Welcome to server: %s", player.getIdentity()));
 
-        response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+        response().setContent(parcel).setRecipientPlayer(player).write();
       }
     }
   }
@@ -114,7 +114,7 @@ public final class TestSimpleServer {
               player.getIdentity(),
               ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-      response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(parcel).setRecipientPlayer(player).write();
     }
   }
 }

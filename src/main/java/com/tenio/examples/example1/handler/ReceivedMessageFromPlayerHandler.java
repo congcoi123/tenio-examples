@@ -26,7 +26,6 @@ package com.tenio.examples.example1.handler;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.msgpack.element.MsgPackMap;
-import com.tenio.core.bootstrap.annotation.Component;
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.entity.Player;
 import com.tenio.core.handler.AbstractHandler;
@@ -44,6 +43,6 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
             player.getIdentity(),
             ((MsgPackMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-    response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+    response().setContent(parcel).setRecipientPlayer(player).write();
   }
 }

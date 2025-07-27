@@ -98,7 +98,7 @@ public final class TestServerCommand {
         var data = map().putString(SharedEventKey.KEY_PLAYER_LOGIN,
             String.format("Welcome to server: %s", player.getIdentity()));
 
-        response().setContent(data.toBinary()).setRecipientPlayer(player).write();
+        response().setContent(data).setRecipientPlayer(player).write();
       }
     }
   }
@@ -114,7 +114,7 @@ public final class TestServerCommand {
               player.getIdentity(),
               ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
-      response().setContent(data.toBinary()).setRecipientPlayer(player).write();
+      response().setContent(data).setRecipientPlayer(player).write();
     }
   }
 }

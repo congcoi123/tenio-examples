@@ -53,7 +53,7 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
         var parcel = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
             array().addByte(DatagramEstablishedState.COMMUNICATING));
 
-        response().setContent(parcel.toBinary()).setRecipientPlayer(player).write();
+        response().setContent(parcel).setRecipientPlayer(player).write();
       }
       case DatagramEstablishedState.COMMUNICATING -> {
         if (request.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {

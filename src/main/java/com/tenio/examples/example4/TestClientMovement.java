@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * 4. Receive a response for allowed UDP connection.<br>
  */
 public final class TestClientMovement extends AbstractLogger
-    implements SocketListener, DatagramListener {
+    implements SocketListener<ZeroMap>, DatagramListener {
 
   private static final boolean LOGGER_DEBUG = false;
   private static final NetworkStatistic statistic = NetworkStatistic.newInstance();
@@ -129,9 +129,7 @@ public final class TestClientMovement extends AbstractLogger
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = (ZeroMap) DataUtility.binaryToCollection(DataType.ZERO, binaries);
-
+  public void onReceivedTCP(ZeroMap parcel) {
     if (LOGGER_DEBUG) {
       System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
     }
@@ -246,6 +244,6 @@ public final class TestClientMovement extends AbstractLogger
 
   private void counting(DataCollection message) {
     localCounter.addCountUdpPacketsOneMinute();
-    localCounter.addCountReceivedPacketSizeOneMinute((message.toBinary().length));
+    localCounter.addCountReceivedPacketSizeOneMinute((message.toBinaries().length));
   }
 }

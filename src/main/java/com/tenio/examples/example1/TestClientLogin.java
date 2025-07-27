@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.tenio.examples.example1;
 
-import com.tenio.common.data.DataType;
+import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.DataUtility;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
@@ -41,7 +41,7 @@ import com.tenio.examples.server.SharedEventKey;
  * <b>[NOTE]</b> The client test is also available on <b>C++</b> and
  * <b>JavaScript</b> language, please see the <b>README.md</b> for more details
  */
-public final class TestClientLogin implements SocketListener {
+public final class TestClientLogin implements SocketListener<DataCollection> {
 
   private static final int SOCKET_PORT = 8032;
   private final TCP tcp;
@@ -69,15 +69,13 @@ public final class TestClientLogin implements SocketListener {
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
-
+  public void onReceivedTCP(DataCollection parcel) {
     System.out.println("[RECV FROM SERVER TCP] -> " + parcel.toString());
 
     try {
       Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    } catch (InterruptedException exception) {
+      exception.printStackTrace();
     }
 
     var request = DataUtility.newMsgMap();

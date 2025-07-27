@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.tenio.examples.example10;
 
-import com.tenio.common.data.DataType;
 import com.tenio.common.data.DataUtility;
 import com.tenio.common.data.msgpack.element.MsgPackMap;
 import com.tenio.core.network.entity.session.Session;
@@ -46,7 +45,7 @@ import com.tenio.examples.server.SharedEventKey;
  * 5. Send messages via UDP connection and get these echoes from the server.<br>
  * 6. Close connections.
  */
-public final class TestClientMsgPackEcho implements SocketListener, DatagramListener {
+public final class TestClientMsgPackEcho implements SocketListener<MsgPackMap>, DatagramListener {
 
   private static final int SOCKET_PORT = 8032;
   private final String playerName;
@@ -76,9 +75,7 @@ public final class TestClientMsgPackEcho implements SocketListener, DatagramList
   }
 
   @Override
-  public void onReceivedTCP(byte[] binaries) {
-    var parcel = (MsgPackMap) DataUtility.binaryToCollection(DataType.MSG_PACK, binaries);
-
+  public void onReceivedTCP(MsgPackMap parcel) {
     System.err.println("[RECV FROM SERVER TCP] -> " + parcel);
     var pack = parcel.getIntegerArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL);
 
