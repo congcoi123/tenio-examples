@@ -135,7 +135,7 @@ public final class UDP {
     var packet = PacketImpl.newInstance();
     packet.setDataType(message.getType());
     packet.setData(message.toBinaries());
-    packet = binaryPacketEncoder.encode(packet, false);
+    packet = binaryPacketEncoder.encode(packet);
     var sendingPacket = packet.getData();
     var request = new DatagramPacket(sendingPacket, sendingPacket.length, inetAddress, port);
     try {
