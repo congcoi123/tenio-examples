@@ -25,7 +25,6 @@ THE SOFTWARE.
 package com.tenio.examples.example11;
 
 import com.tenio.common.configuration.Configuration;
-import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.ApplicationLauncher;
 import com.tenio.core.bootstrap.annotation.Bootstrap;
@@ -75,15 +74,12 @@ public final class TestServerCommand {
 
   @EventHandler
   public static class ConnectionEstablishedHandler extends AbstractHandler
-      implements EventConnectionEstablishedResult {
+      implements EventConnectionEstablishedResult<ZeroMap> {
 
     @Override
-    public void handle(Session session, DataCollection message,
-                       ConnectionEstablishedResult result) {
+    public void handle(Session session, ZeroMap message, ConnectionEstablishedResult result) {
       if (result == ConnectionEstablishedResult.SUCCESS) {
-        var data = (ZeroMap) message;
-
-        api().login(data.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
+        api().login(message.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
       }
     }
   }
@@ -105,14 +101,14 @@ public final class TestServerCommand {
 
   @EventHandler
   public static class ReceivedMessageFromPlayerHandler extends AbstractHandler
-      implements EventReceivedMessageFromPlayer<Player> {
+      implements EventReceivedMessageFromPlayer<Player, ZeroMap> {
 
     @Override
-    public void handle(Player player, DataCollection message) {
+    public void handle(Player player, ZeroMap message) {
       var data =
           map().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
               player.getIdentity(),
-              ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
+              message.getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));
 
       response().setContent(data).setRecipientPlayer(player).write();
     }

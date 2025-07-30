@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.tenio.examples.example4.handler;
 
-import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.bootstrap.annotation.AutowiredAcceptNull;
 import com.tenio.core.bootstrap.annotation.EventHandler;
@@ -39,15 +38,14 @@ import com.tenio.examples.server.SharedEventKey;
 
 @EventHandler
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
-    implements EventReceivedMessageFromPlayer<Player> {
+    implements EventReceivedMessageFromPlayer<Player, ZeroMap> {
 
   @AutowiredAcceptNull
   private HeartBeatManager heartBeatManager;
 
   @Override
-  public void handle(Player player, DataCollection message) {
-    var request = (ZeroMap) message;
-    byte command = request.getByte(SharedEventKey.KEY_COMMAND);
+  public void handle(Player player, ZeroMap message) {
+    byte command = message.getByte(SharedEventKey.KEY_COMMAND);
     switch (command) {
       case DatagramEstablishedState.ESTABLISHED -> {
         var parcel = map().putZeroArray(SharedEventKey.KEY_ALLOW_TO_ACCESS_UDP_CHANNEL,
@@ -56,11 +54,11 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
         response().setContent(parcel).setRecipientPlayer(player).write();
       }
       case DatagramEstablishedState.COMMUNICATING -> {
-        if (request.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {
+        if (message.containsKey(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS)) {
           var parcel = ExampleMessage.newInstance();
           parcel.putContent(ServerEventKey.KEY_PLAYER_NAME, player.getIdentity());
           parcel.putContent(ServerEventKey.KEY_PLAYER_REQUEST,
-              request.getString(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS));
+              message.getString(SharedEventKey.KEY_PLAYER_REQUEST_NEIGHBOURS));
 
           heartBeatManager.sendMessage("world", parcel);
         }

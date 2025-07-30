@@ -26,6 +26,9 @@ package com.tenio.examples.example0;
 
 import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.DataUtility;
+import com.tenio.common.data.msgpack.element.MsgPackMap;
+import com.tenio.common.data.zero.ZeroMap;
+import com.tenio.common.utility.MathUtility;
 import com.tenio.examples.client.ClientUtility;
 import com.tenio.examples.client.SocketListener;
 import com.tenio.examples.client.TCP;
@@ -75,8 +78,16 @@ public final class TestSimpleClient implements SocketListener<DataCollection> {
       exception.printStackTrace();
     }
 
-    var request = DataUtility.newZeroMap();
-    request.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "Hello from client");
+    DataCollection request;
+    if (MathUtility.randBool()) {
+      request = DataUtility.newZeroMap();
+      ((ZeroMap) request).putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "[ZERO] Hello from " +
+          "client");
+    } else {
+      request = DataUtility.newMsgMap();
+      ((MsgPackMap) request).putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "[MSGPACK] Hello " +
+          "from client");
+    }
     tcp.send(request);
 
     System.err.println("[SENT TO SERVER] -> " + request);

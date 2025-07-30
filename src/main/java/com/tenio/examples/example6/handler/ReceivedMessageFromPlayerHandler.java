@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.tenio.examples.example6.handler;
 
-import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.common.utility.MathUtility;
 import com.tenio.core.bootstrap.annotation.EventHandler;
@@ -37,14 +36,14 @@ import java.util.List;
 
 @EventHandler
 public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
-    implements EventReceivedMessageFromPlayer<Player> {
+    implements EventReceivedMessageFromPlayer<Player, ZeroMap> {
 
   @Override
-  public void handle(Player player, DataCollection message) {
+  public void handle(Player player, ZeroMap message) {
     var parcel = map().putString(SharedEventKey.KEY_PLAYER_LOGIN, player.getIdentity())
         .putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO,
             String.format("Echo(%s): %s", player.getIdentity(),
-                ((ZeroMap) message).getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)))
+                message.getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)))
         .putIntegerArray(SharedEventKey.KEY_INTEGER_ARRAY, getSortRandomNumberArray());
 
     response().setContent(parcel).setRecipientPlayer(player).write();
