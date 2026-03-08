@@ -39,10 +39,11 @@
 		<jdk.vendor>oracle</jdk.vendor>
 
 		<io.github.congcoi123.tenio.core.version>0.6.8</io.github.congcoi123.tenio.core.version>
-		<io.github.congcoi123.tenio.engine.version>0.6.5</io.github.congcoi123.tenio.engine.version>
-		<org.apache.commons.version>3.18.0</org.apache.commons.version>
+		<io.github.congcoi123.tenio.engine.version>0.6.8</io.github.congcoi123.tenio.engine.version>
+		<org.apache.commons.version>3.20.0</org.apache.commons.version>
 
-		<maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+		<maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+		<maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.source>17</maven.compiler.source>
 	</properties>
@@ -90,6 +91,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven.assembly.plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
