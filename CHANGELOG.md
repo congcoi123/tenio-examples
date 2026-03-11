@@ -77,5 +77,5 @@
 - Upgraded dependencies
 - Adapted new APIs
 
-## 0.6.8 2025-09-03 Feature release
+## 0.6.8 2026-03-10 Feature release
 - Upgraded dependencies
