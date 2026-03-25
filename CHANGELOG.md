@@ -85,4 +85,4 @@
 
 ## 0.6.10 2026-XX-XX Feature release
 - Upgraded dependencies
-
+- Allowed default configurations
