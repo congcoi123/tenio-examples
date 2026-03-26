@@ -83,6 +83,6 @@
 ## 0.6.9 2026-03-23 Feature release
 - Upgraded dependencies
 
-## 0.6.10 2026-XX-XX Feature release
+## 0.6.10 2026-03-26 Feature release
 - Upgraded dependencies
 - Allowed default configurations
