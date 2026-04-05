@@ -62,7 +62,7 @@ $ git clone https://github.com/congcoi123/tenio-examples.git
 public final class SimpleServer extends AbstractHandler implements EventConnectionEstablishedResult<ZeroMap>,
         EventPlayerLogin<Player>, EventReceivedMessageFromPlayer<Player, DataCollection> {
 
-    static void main(String[] params) {
+    static void main() {
         ApplicationLauncher.run(SimpleServer.class);
     }
 

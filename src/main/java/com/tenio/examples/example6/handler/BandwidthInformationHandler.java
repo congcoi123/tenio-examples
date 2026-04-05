@@ -29,8 +29,7 @@ import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventFetchedBandwidthInfo;
 
 @EventHandler
-public final class BandwidthInformationHandler extends AbstractHandler
-    implements EventFetchedBandwidthInfo {
+public final class BandwidthInformationHandler extends AbstractHandler implements EventFetchedBandwidthInfo {
 
   @Override
   public void onFetchedBandwidthInfo(long readBytes, long readPackets, long readDroppedPackets, long writtenBytes,

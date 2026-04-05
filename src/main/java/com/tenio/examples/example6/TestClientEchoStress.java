@@ -59,7 +59,7 @@ public final class TestClientEchoStress implements SocketListener<ZeroMap> {
     // create a list of TCP objects and listen to this port
     for (int i = 0; i < NUMBER_CLIENTS; i++) {
       var name = ClientUtility.generateRandomString(5);
-      var tcp = new TCP(SOCKET_PORT, it -> {
+      new TCP(SOCKET_PORT, it -> {
         it.receive(TestClientEchoStress.this);
         tcps.put(name, it);
 
@@ -87,7 +87,7 @@ public final class TestClientEchoStress implements SocketListener<ZeroMap> {
     }
 
     try {
-      Thread.sleep(100);
+      Thread.sleep(10);
     } catch (InterruptedException exception) {
       exception.printStackTrace();
     }
