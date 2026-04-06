@@ -29,7 +29,7 @@
 			<Property name="socket-writer-buffer-size">1024</Property>
 			<Property name="packet-compression-threshold-bytes">0</Property>
 			<Property name="allow-change-session">false</Property>
-			<Property name="max-connections-per-ip">5000</Property>
+			<Property name="max-connections-per-ip">10000</Property>
 		</Properties>
 	</Network>
 
@@ -66,7 +66,7 @@
 				player instance until timeout -->
 			<Property name="keep-player-on-disconnection">false</Property>
 			<!-- The maximum number of players which game can handle -->
-			<Property name="max-number-players">5000</Property>
+			<Property name="max-number-players">10000</Property>
 			<!-- The maximum number of rooms which game can handle -->
 			<Property name="max-number-rooms">1000</Property>
 			<!-- The max IDLE time in seconds which server can wait from the last 

@@ -47,7 +47,8 @@ import java.util.Map;
 public final class TestClientEchoStress implements SocketListener<ZeroMap> {
 
   private static final int SOCKET_PORT = 8032;
-  private static final int NUMBER_CLIENTS = 5000;
+  private static final int NUMBER_CLIENTS = 10_000;
+  private static final int REQUEST_INTERVAL_MS = 10;
   private static final boolean ENABLED_DEBUG = true;
   /**
    * List of TCP clients
@@ -87,7 +88,7 @@ public final class TestClientEchoStress implements SocketListener<ZeroMap> {
     }
 
     try {
-      Thread.sleep(10);
+      Thread.sleep(REQUEST_INTERVAL_MS);
     } catch (InterruptedException exception) {
       exception.printStackTrace();
     }
