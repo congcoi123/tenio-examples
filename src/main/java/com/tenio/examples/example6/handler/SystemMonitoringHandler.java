@@ -37,7 +37,7 @@ public final class SystemMonitoringHandler extends AbstractHandler implements Ev
                                  long usedMemory, long freeMemory, long platformThreads) {
     if (isInfoEnabled()) {
       var info = String.format(
-          "cpuUsage: %.2f%%; totalMemory: %.3fMB; usedMemory: %.3fMB; freeMemory: %.3fMB; platformThreads: %d",
+          "cpuUsage: %.2f%%; totalMemory: %.3f MB; usedMemory: %.3f MB; freeMemory: %.3f MB; platformThreads: %d",
           (float) cpuUsage * 100, ZeroUtility.convertBytesToMB(totalMemory),
           ZeroUtility.convertBytesToMB(usedMemory), ZeroUtility.convertBytesToMB(freeMemory), platformThreads);
 
