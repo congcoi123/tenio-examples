@@ -48,7 +48,7 @@ public final class TestClientEchoStress implements SocketListener<ZeroMap> {
 
   private static final int SOCKET_PORT = 8032;
   private static final int NUMBER_CLIENTS = 10_000;
-  private static final int REQUEST_INTERVAL_MS = 10;
+  private static final int REQUEST_INTERVAL_MS = 1;
   private static final boolean ENABLED_DEBUG = true;
   /**
    * List of TCP clients
