@@ -35,9 +35,8 @@
 
 	<Configuration>
 		<Workers>
-			<Worker name="socket-acceptor">1</Worker>
 			<Worker name="socket-reader">16</Worker>
-			<Worker name="socket-writer">16</Worker>
+			<Worker name="socket-writer">32</Worker>
 			<Worker name="websocket-producer">1</Worker>
 			<Worker name="websocket-consumer">2</Worker>
 		</Workers>
@@ -63,9 +62,9 @@
 			<!-- When this queue size is set to 0, then there is no restriction -->
 			<Property name="max-session-response-queue-size">100</Property>
 			<!-- When this threshold is set to 0, then there is no warning -->
-			<Property name="slow-consuming-warning-session-request-threshold">10</Property>
+			<Property name="slow-consuming-warning-session-request-threshold">1</Property>
 			<!-- When this threshold is set to 0, then there is no warning -->
-			<Property name="slow-consuming-warning-session-response-threshold">10</Property>
+			<Property name="slow-consuming-warning-session-response-threshold">1</Property>
 			<!-- When the server get disconnection of one client, can be hold its
 				 player instance until timeout -->
 			<Property name="keep-player-on-disconnection">false</Property>
