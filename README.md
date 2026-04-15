@@ -34,7 +34,7 @@ This project contains a collection of examples that show you how to manipulate t
 ```
 
 ## Requirements
-- Java 21+
+Java 21+
 
 ## License
 The [`TenIO`](https://github.com/congcoi123/tenio) project is currently available under the [MIT](LICENSE) License.
