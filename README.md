@@ -29,8 +29,8 @@ This project contains a collection of examples that show you how to manipulate t
 
 ## Dependencies
 ```txt
-- tenio-core 0.7.0
-- tenio-engine 0.7.0
+tenio-core 0.7.1
+tenio-engine 0.7.0
 ```
 
 ## Requirements
