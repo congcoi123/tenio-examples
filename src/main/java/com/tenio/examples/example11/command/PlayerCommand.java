@@ -38,6 +38,10 @@ public class PlayerCommand extends AbstractSystemCommandHandler {
 
   @Override
   public void execute(List<String> args) {
+    if (args.size() != 2) {
+      CommandUtility.INSTANCE.showConsoleMessage("Usage: player logout first");
+      return;
+    }
     var action = args.get(0);
     var param = args.get(1);
 
