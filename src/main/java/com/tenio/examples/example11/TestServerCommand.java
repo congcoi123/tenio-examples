@@ -96,12 +96,39 @@ public final class TestServerCommand {
     }
   }
 
+  private static final short CREATE_ROOM = 1;
+  private static final short CHAT = 2;
+
+  @com.tenio.core.bootstrap.annotation.ClientCommand(value = CREATE_ROOM, requestsPerSecond = 1, burst = 2)
+  public static final class CreateRoom extends com.tenio.core.command.client.AbstractClientCommandHandler<Player, ZeroMap> {
+    @Override
+    public void execute(Player player, ZeroMap message) {
+      var setting = com.tenio.core.entity.setting.InitialRoomSetting.Builder.newInstance()
+          .setName(message.getString("name")).setMaxParticipants(2).build();
+      api().createRoom(setting, player);
+    }
+  }
+
+  @com.tenio.core.bootstrap.annotation.ClientCommand(value = CHAT, requestsPerSecond = 2, burst = 4)
+  public static final class Chat extends com.tenio.core.command.client.AbstractClientCommandHandler<Player, ZeroMap> {
+    @Override
+    public void execute(Player player, ZeroMap message) {
+      player.getCurrentRoom().ifPresent(room -> response()
+          .setContent(map().putString("chat", message.getString("chat")))
+          .setRecipientPlayers(room.getSnapshotPlayersList()).write());
+    }
+  }
+
   @EventHandler
   public static class ReceivedMessageFromPlayerHandler extends AbstractHandler
       implements EventReceivedMessageFromPlayer<Player, ZeroMap> {
 
     @Override
     public void onReceivedMessageFromPlayer(Player player, ZeroMap message) {
+      if (message.containsKey("op")) {
+        clientCommand().invoke(message.getShort("op"), player, message);
+        return;
+      }
       var data =
           map().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
               player.getIdentity(),

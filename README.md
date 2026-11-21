@@ -135,9 +135,6 @@ XML selects profiles under the top-level Server/Properties section:
 <Property name="profile">development,metrics</Property>
 ```
 
-With the metrics profile, Example 12 registers `REPORT_EXAMPLE_LOGINS` and reports its login count every 60 seconds. Look for its name under `[SERVER SCHEDULED TASKS]` at startup. The development-only configuration lists the three maintenance jobs.
-
-
 Profile names are trimmed and case-sensitive. An annotation's listed names are OR alternatives. Empty annotation restrictions participate in every profile; they do not imply a profile named `default`. XML must supply at least one profile. Selection happens at startup and is not a runtime feature toggle. Profiles do not replace bean qualifiers.
 
 Choose **one** of development or production in this example. Activating both introduces competing implementations and factory products. Using only metrics omits the base profile needed by the bootstrap and greeting service. Other examples explicitly select `default` and keep their unrestricted annotations.
@@ -153,3 +150,12 @@ The sample compression/encryption classes are **pass-through teaching placeholde
 ## License
 
 [MIT](LICENSE).
+
+### Example 11: limited client commands and desktop inspection
+
+The existing echo path still accepts the original client messages. To exercise the optional
+commands, send a ZeroMap with short `op=1` and string `name` to create a room (1/s, burst 2),
+or short `op=2` and string `chat` to send text to the current room (2/s, burst 4).
+These are example rates. Set `enable-terminal-command` to true for the desktop window and enter
+`limits` after sending several requests. Use `stats`, `room <id>` and `session <id>` to inspect
+the running example. Add the optional `history` profile to inspect disconnects and reconnects.
