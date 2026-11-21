@@ -135,6 +135,9 @@ XML selects profiles under the top-level Server/Properties section:
 <Property name="profile">development,metrics</Property>
 ```
 
+With the metrics profile, Example 12 registers `REPORT_EXAMPLE_LOGINS` and reports its login count every 60 seconds. Look for its name under `[SERVER SCHEDULED TASKS]` at startup. The development-only configuration lists the three maintenance jobs.
+
+
 Profile names are trimmed and case-sensitive. An annotation's listed names are OR alternatives. Empty annotation restrictions participate in every profile; they do not imply a profile named `default`. XML must supply at least one profile. Selection happens at startup and is not a runtime feature toggle. Profiles do not replace bean qualifiers.
 
 Choose **one** of development or production in this example. Activating both introduces competing implementations and factory products. Using only metrics omits the base profile needed by the bootstrap and greeting service. Other examples explicitly select `default` and keep their unrestricted annotations.

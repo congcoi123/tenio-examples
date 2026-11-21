@@ -26,6 +26,7 @@ package com.tenio.examples.example12;
 
 import com.tenio.core.bootstrap.annotation.Component;
 
+import com.tenio.core.bootstrap.annotation.Scheduled;
 import java.util.concurrent.atomic.LongAdder;
 
 @Component(profile = "metrics")
@@ -35,6 +36,11 @@ public final class LoginMetrics {
 
     public void recordLogin() {
         logins.increment();
+    }
+
+    @Scheduled(threadName = "REPORT_EXAMPLE_LOGINS", intervalSeconds = 60, initialDelaySeconds = 60)
+    public void reportLogins() {
+        System.out.println("Example 12 login count: " + count());
     }
 
     public long count() {
