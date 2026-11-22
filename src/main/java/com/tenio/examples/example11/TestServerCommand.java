@@ -99,7 +99,7 @@ public final class TestServerCommand {
   private static final short CREATE_ROOM = 1;
   private static final short CHAT = 2;
 
-  @com.tenio.core.bootstrap.annotation.ClientCommand(value = CREATE_ROOM, requestsPerSecond = 1, burst = 2)
+  @com.tenio.core.bootstrap.annotation.ClientCommand(value = CREATE_ROOM, name = "Create Room", description = "Create a new room", requestsPerSecond = 1, burst = 2)
   public static final class CreateRoom extends com.tenio.core.command.client.AbstractClientCommandHandler<Player, ZeroMap> {
     @Override
     public void execute(Player player, ZeroMap message) {
