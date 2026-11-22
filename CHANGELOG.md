@@ -118,4 +118,4 @@
 - Made movement counters atomic across interval resets and replaced unbounded statistics lists with lifetime aggregates.
 - Consolidated identical extension configuration parsing into AbstractExampleConfiguration while keeping each example's local Setting entry.
 - Used Java HttpClient with timeouts in the REST example, corrected the assembly main class, honored configuration arguments and guarded terminal-command arguments.
-- Added transport, profile, configuration and statistics regression tests, an audit report and a framework-neutral SDK extraction proposal based on GameBox.
+- Added transport, profile, configuration and statistics regression tests.
