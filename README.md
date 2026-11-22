@@ -151,11 +151,19 @@ The sample compression/encryption classes are **pass-through teaching placeholde
 
 [MIT](LICENSE).
 
-### Example 11: limited client commands and desktop inspection
+### Example 11: desktop monitoring and custom commands
 
-The existing echo path still accepts the original client messages. To exercise the optional
-commands, send a ZeroMap with short `op=1` and string `name` to create a room (1/s, burst 2),
-or short `op=2` and string `chat` to send text to the current room (2/s, burst 4).
-These are example rates. Set `enable-terminal-command` to true for the desktop window and enter
-`limits` after sending several requests. Use `stats`, `room <id>` and `session <id>` to inspect
-the running example. Add the optional `history` profile to inspect disconnects and reconnects.
+Run the server with `configuration.example11.xml`. It enables `monitor` and `history`.
+On a machine with a graphical desktop, TenIO opens the monitor window. Enter `help`
+to see the available commands. Try `player logout first` after connecting a test
+client, then run `history` to see the disconnect. Use Up and Down to recall commands.
+
+The original echo messages still work. Optional ZeroMap commands use short `op=1`
+and string `name` to create a room, or short `op=2` and string `chat` to send a
+message to the current room. Room creation is limited to 1 request per second with a
+burst of 2, and chat to 2 per second with a burst of 4, per player. Enter `limits` to
+see accepted and rejected requests. TenIO also applies its normal session queue policies.
+
+Remove `monitor` from the example profile to run without the window and system
+commands. With `history` still present, TenIO writes a TSV file under `logs/history/`.
+See the TenIO Core README for the full profile reference.
