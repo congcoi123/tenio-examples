@@ -114,7 +114,7 @@ Remove `monitor` from the example profile to run without the window and system
 commands. With `history` still present, TenIO writes a TSV file under `logs/history/`.
 See the TenIO Core README for the full profile reference.
 
-## Example 11: Profiles
+## Example 12: Profiles
 
 Run the same server with different XML files:
 
