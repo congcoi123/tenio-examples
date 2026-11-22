@@ -3,7 +3,7 @@
 
 	<Properties>
 		<!-- Required startup profile; blank annotation restrictions match every profile. -->
-		<Property name="profile">default,metrics</Property>
+		<Property name="profile">default,metrics,monitor,history</Property>
 		<!-- The server name -->
 		<Property name="server-name">Example</Property>
 		<!-- The server id (module name) -->
