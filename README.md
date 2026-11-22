@@ -97,7 +97,24 @@ public final class SimpleServer extends AbstractHandler implements EventConnecti
 
 Example6 defaults to 100 clients. Use `-Dtenio.clients=10000` before the main class to opt into a larger load test. It uses one platform reader thread per client and is a demonstration, not a high-scale benchmark driver.
 
-## Profiles: example12
+## Example 11: Desktop Monitoring and Custom Commands
+
+Run the server with `configuration.example11.xml`. It enables `monitor` and `history`.
+On a machine with a graphical desktop, TenIO opens the monitor window. Enter `help`
+to see the available commands. Try `player logout first` after connecting a test
+client, then run `history` to see the disconnect. Use Up and Down to recall commands.
+
+The original echo messages still work. Optional ZeroMap commands use short `op=1`
+and string `name` to create a room, or short `op=2` and string `chat` to send a
+message to the current room. Room creation is limited to 1 request per second with a
+burst of 2, and chat to 2 per second with a burst of 4, per player. Enter `limits` to
+see accepted and rejected requests. TenIO also applies its normal session queue policies.
+
+Remove `monitor` from the example profile to run without the window and system
+commands. With `history` still present, TenIO writes a TSV file under `logs/history/`.
+See the TenIO Core README for the full profile reference.
+
+## Example 11: Profiles
 
 Run the same server with different XML files:
 
@@ -139,7 +156,7 @@ Profile names are trimmed and case-sensitive. An annotation's listed names are O
 
 Choose **one** of development or production in this example. Activating both introduces competing implementations and factory products. Using only metrics omits the base profile needed by the bootstrap and greeting service. Other examples explicitly select `default` and keep their unrestricted annotations.
 
-## Shared example client
+## Shared Example Client
 
 `client/TCP`, `client/UDP`, `ClientCodec` and `ClientTasks` centralize transport and task lifecycle behavior. New code should connect explicitly, assign its fields, configure error/disconnection handlers, then start receiving. Constructor callbacks remain only as compatibility adapters.
 
@@ -147,23 +164,22 @@ TCP sends are synchronous and serialized. Listener callbacks run on the reader a
 
 The sample compression/encryption classes are **pass-through teaching placeholders**. They neither compress nor protect data and must match the server's configured codecs. UDP registration by player name demonstrates the flow; a deployed application needs authenticated registration. Configure TCP main-connection expiry only alongside a suitable application heartbeat. UDP activity cannot keep TCP alive.
 
+## Requirements
+Java 21+
+
 ## License
+The [`TenIO`](https://github.com/congcoi123/tenio) project is currently available under the [MIT](LICENSE) License.
 
-[MIT](LICENSE).
+## Changelog
+Please check out the [changelog](CHANGELOG.md) for more details.
 
-### Example 11: desktop monitoring and custom commands
+## Contributing
+Please check out the [checklist](CHECKLIST.md) and [contributing guideline](CONTRIBUTING.md) for more details.
 
-Run the server with `configuration.example11.xml`. It enables `monitor` and `history`.
-On a machine with a graphical desktop, TenIO opens the monitor window. Enter `help`
-to see the available commands. Try `player logout first` after connecting a test
-client, then run `history` to see the disconnect. Use Up and Down to recall commands.
+## Installation
+GitHub
+```sh
+$ git clone https://github.com/congcoi123/tenio-examples.git
+```
 
-The original echo messages still work. Optional ZeroMap commands use short `op=1`
-and string `name` to create a room, or short `op=2` and string `chat` to send a
-message to the current room. Room creation is limited to 1 request per second with a
-burst of 2, and chat to 2 per second with a burst of 4, per player. Enter `limits` to
-see accepted and rejected requests. TenIO also applies its normal session queue policies.
-
-Remove `monitor` from the example profile to run without the window and system
-commands. With `history` still present, TenIO writes a TSV file under `logs/history/`.
-See the TenIO Core README for the full profile reference.
+> Happy coding !
