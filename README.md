@@ -1,4 +1,35 @@
-# TenIO Examples
+<p align="center">
+  <a href="https://github.com/congcoi123/tenio">
+    <img src="https://raw.githubusercontent.com/congcoi123/tenio/master/assets/tenio-github-logo.png" alt="TenIO — multiplayer game server framework">
+  </a>
+</p>
+
+<h1 align="center">TenIO Examples</h1>
+
+<p align="center">
+  Runnable servers and clients. Learn TenIO one example at a time.
+</p>
+
+<p align="center">
+  <a href="https://github.com/congcoi123/tenio"><img src="https://img.shields.io/badge/Java-21%2B-ED8B00?style=flat&logo=openjdk&logoColor=white" alt="Java 21 or newer"></a>
+  <a href="https://central.sonatype.com/artifact/io.github.congcoi123/tenio-core"><img src="https://img.shields.io/maven-central/v/io.github.congcoi123/tenio-core?style=flat&label=tenio-core" alt="tenio-core on Maven Central"></a>
+  <a href="https://central.sonatype.com/artifact/io.github.congcoi123/tenio-engine"><img src="https://img.shields.io/maven-central/v/io.github.congcoi123/tenio-engine?style=flat&label=tenio-engine" alt="tenio-engine on Maven Central"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/congcoi123/tenio-examples/commits/master"><img src="https://img.shields.io/github/last-commit/congcoi123/tenio-examples?style=flat" alt="Latest commit"></a>
+  <a href="https://github.com/congcoi123/tenio-examples/issues"><img src="https://img.shields.io/github/issues/congcoi123/tenio-examples?style=flat" alt="Open issues"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Contributions welcome"></a>
+  <a href="https://discord.gg/ybkNU87Psy"><img src="https://img.shields.io/discord/1146091189456613407?style=flat&logo=discord&logoColor=white&label=Discord" alt="Join the TenIO community"></a>
+</p>
+
+<p align="center">
+  <a href="#build-and-run">Build &amp; run</a> ·
+  <a href="https://github.com/congcoi123/tenio">TenIO</a> ·
+  <a href="https://github.com/congcoi123/tenio-core#readme">Core guide</a> ·
+  <a href="https://github.com/congcoi123/tenio-examples#readme">Examples</a>
+</p>
 
 Runnable Java 21 examples for `tenio-core:1.0.0` and `tenio-engine:1.0.0`.
 
