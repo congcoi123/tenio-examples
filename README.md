@@ -31,11 +31,11 @@
   <a href="https://github.com/congcoi123/tenio-examples#readme">Examples</a>
 </p>
 
-Runnable Java 21 examples for `tenio-core:1.0.0` and `tenio-engine:1.0.0`.
+Runnable Java 21 examples for `tenio-core:1.1.0` and `tenio-engine:1.0.0`.
 
 ## Build and run
 
-Install the updated core locally before building examples if version 1.0.0 has not yet been published:
+Install the updated core locally before building examples if version 1.1.0 has not yet been published:
 
 ```sh
 # In tenio-core
@@ -48,14 +48,14 @@ mvn test package
 The assembly defaults to example1's login server. Run it from the examples directory:
 
 ```sh
-java -jar target/tenio-examples-1.0.0-jar-with-dependencies.jar configuration.example1.xml
+java -jar target/tenio-examples-1.1.0-jar-with-dependencies.jar configuration.example1.xml
 ```
 
 For another entry point, use the assembled JAR as the classpath:
 
 ```sh
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example3.TestServerAccessDatagramChannel configuration.example3.xml
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example3.TestClientAccessDatagramChannel
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example3.TestServerAccessDatagramChannel configuration.example3.xml
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example3.TestClientAccessDatagramChannel
 ```
 
 Start each server before its client. Each example uses its own package as its component scan root. Start separate examples in separate JVMs; the server runtime still contains global services. TCP uses port 8032 unless its configuration says otherwise. Clients currently target localhost; the shared transports also accept explicit remote hosts.
@@ -120,7 +120,7 @@ public final class SimpleServer extends AbstractHandler implements EventConnecti
 | example4 | Movement simulation, steering, UDP statistics | configuration.example4.xml |
 | example5 | Entity/component/system simulation | No network server |
 | example6 | TCP echo load generator | configuration.example6.xml |
-| example7 | WebSocket server and room handlers | configuration.example7.xml |
+| example7 | WebSocket room server and dependency-free JDK transport test client | configuration.example7.xml |
 | example8 | HTTP server and Java HttpClient request | configuration.example8.xml |
 | example10 | TCP login and MsgPack UDP registration/echo | configuration.example10.xml |
 | example11 | Custom terminal commands | configuration.example11.xml |
@@ -128,6 +128,41 @@ public final class SimpleServer extends AbstractHandler implements EventConnecti
 | example13 | Framework services: command routing/execution, recovery, delivery, performance, room discovery and replicated state | configuration.example13.xml |
 
 Example6 defaults to 100 clients. Use `-Dtenio.clients=10000` before the main class to opt into a larger load test. It uses one platform reader thread per client and is a demonstration, not a high-scale benchmark driver.
+
+## Example 7: WebSocket Server and JDK Test Client
+
+Start the server, then run the client in another terminal:
+
+```sh
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example7.TestServerWebsocket configuration.example7.xml
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example7.TestClientWebsocket
+```
+
+`TestClientWebsocket` uses the JDK `java.net.http.WebSocket` transport and TenIO Common MessagePack
+serialization. It requires no external browser client, WebSocket client library or client SDK.
+The examples remain Java 21 applications; this test client is separate from the official Java SDK.
+
+The client logs in, joins `test-room`, sends a fragmented movement packet, verifies its echo,
+checks ping/pong, closes cleanly and exits. Each wait has a timeout, and malformed responses
+make the run fail. The room remains available while empty, so a delayed client can still join.
+The room accepts two participants. Run clients with distinct names when testing broadcasts.
+
+An optional URI and player name can be passed after the main class:
+
+```sh
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example7.TestClientWebsocket ws://localhost:8033/websocket Alice
+```
+
+The configuration binds to `127.0.0.1` and disables TenIO packet compression for this plain
+MessagePack example. Change `server-address` to `0.0.0.0` for remote IPv4 clients. Each complete
+WebSocket message contains one TenIO packet: a one-byte MessagePack header followed by its
+payload, without a TCP length prefix. Text frames are unsupported.
+
+For WSS, enable `websocket-using-ssl`, configure the server JKS keystore with
+`-Dkeystore.file.path` and `TENIO_KEYSTORE_PASSWORD`, and use a `wss://` URI. The JDK client
+uses its standard TLS trust and hostname verification. For a private CA, configure the client
+JVM's `javax.net.ssl.trustStore` and `javax.net.ssl.trustStorePassword`; do not disable TLS checks.
+See the [core WebSocket guide](https://github.com/congcoi123/tenio-core#websocket-transport).
 
 ## Example 11: Desktop Monitoring and Custom Commands
 
@@ -153,13 +188,13 @@ See the TenIO Core README for the full profile reference.
 Run the same server with different XML files:
 
 ```sh
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example12.TestServerProfiles configuration.example12.development.xml
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example12.TestServerProfiles configuration.example12.development.xml
 ```
 
 In another terminal:
 
 ```sh
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example12.TestClientProfiles
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example12.TestClientProfiles
 ```
 
 Stop the server, then repeat with another configuration:
@@ -199,13 +234,13 @@ Install the updated core from the accompanying changes first; the example uses t
 mvn -Dgpg.skip=true clean install
 # In tenio-examples
 mvn clean verify
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example13.TestServerCapabilities configuration.example13.xml
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example13.TestServerCapabilities configuration.example13.xml
 ```
 
 In a second terminal, run the finite walkthrough client:
 
 ```sh
-java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example13.TestClientCapabilities
+java -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example13.TestClientCapabilities
 ```
 
 | Framework feature | Example implementation | What to observe |

@@ -120,7 +120,7 @@
 - Used Java HttpClient with timeouts in the REST example, corrected the assembly main class, honored configuration arguments and guarded terminal-command arguments.
 - Added transport, profile, configuration and statistics regression tests.
 
-## Unreleased — Framework services
+## 1.1.0 2026-11-25 Framework services
 - Example 11 now uses an injected `ClientCommandPolicy` instead of manual dispatch inside a player-message event. Echo has its own command code (3); the client is updated accordingly.
 - Add runnable example 13 for bounded command execution, token-based snapshot recovery, delivery options, persistent performance, explicit room discovery and schema/revision-controlled replicated state.
 - Add policy contract tests and an isolated headless TCP integration test, including invalid envelopes, stale revisions, token rotation and performance exports.
@@ -130,3 +130,9 @@
 ### Documentation
 - Integrate command execution, recovery, response delivery, performance history, room discovery and replicated state into the main framework documentation.
 - Replace the separate optional-capabilities presentation with feature sections, service usage, defaults and a framework-services walkthrough in example 13.
+
+### WebSocket example and release
+- Release examples as 1.1.0 with tenio-core 1.1.0; retain tenio-engine 1.0.0.
+- Add example 7 TestClient using the JDK WebSocket transport, with finite login, fragmented movement, ping/pong and close checks. No external WebSocket client is required.
+- Keep the example room alive while empty, resolve it by name, validate movement coordinates and bind locally by default. Disable packet compression for the plain MessagePack walkthrough.
+- Document WS/WSS startup and add real-server integration coverage.

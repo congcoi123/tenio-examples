@@ -26,6 +26,7 @@ package com.tenio.examples.example7.handler;
 
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.handler.AbstractHandler;
+import com.tenio.core.entity.define.mode.RoomRemoveMode;
 import com.tenio.core.handler.event.EventServerInitialization;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +46,8 @@ public final class ServerInitializedHandler extends AbstractHandler
     }
 
     var roomSetting =
-        roomSetting().setActivated(true).setMaxParticipants(2).setName("test-room").build();
+        roomSetting().setActivated(true).setMaxParticipants(2).setName("test-room")
+            .setRoomRemoveMode(RoomRemoveMode.NEVER_REMOVE).build();
 
     var room = api().createRoom(roomSetting);
     if (isInfoEnabled()) {

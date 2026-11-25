@@ -39,6 +39,9 @@ public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
   @Override
   public void onReceivedMessageFromPlayer(Player player, MsgPackMap message) {
     var positions = message.getIntegerArray(SharedEventKey.KEY_DATA);
+    if (positions == null || positions.length != 2 || player.getCurrentRoom().isEmpty()) {
+      return;
+    }
 
     player.setProperty(Example7Constant.PLAYER_POSITION_X, positions[0]);
     player.setProperty(Example7Constant.PLAYER_POSITION_Y, positions[1]);
