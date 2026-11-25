@@ -119,3 +119,14 @@
 - Consolidated identical extension configuration parsing into AbstractExampleConfiguration while keeping each example's local Setting entry.
 - Used Java HttpClient with timeouts in the REST example, corrected the assembly main class, honored configuration arguments and guarded terminal-command arguments.
 - Added transport, profile, configuration and statistics regression tests.
+
+## Unreleased — Framework services
+- Example 11 now uses an injected `ClientCommandPolicy` instead of manual dispatch inside a player-message event. Echo has its own command code (3); the client is updated accordingly.
+- Add runnable example 13 for bounded command execution, token-based snapshot recovery, delivery options, persistent performance, explicit room discovery and schema/revision-controlled replicated state.
+- Add policy contract tests and an isolated headless TCP integration test, including invalid envelopes, stale revisions, token rotation and performance exports.
+- Document framework service setup, default rules, application-owned wire fields and exclusive receive modes.
+- Verify both clean builds: 1,606 core tests and 5 example tests pass, including mixed-handler startup diagnostics and a burst-traffic regression fix in core.
+
+### Documentation
+- Integrate command execution, recovery, response delivery, performance history, room discovery and replicated state into the main framework documentation.
+- Replace the separate optional-capabilities presentation with feature sections, service usage, defaults and a framework-services walkthrough in example 13.

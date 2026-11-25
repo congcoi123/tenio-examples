@@ -125,6 +125,7 @@ public final class SimpleServer extends AbstractHandler implements EventConnecti
 | example10 | TCP login and MsgPack UDP registration/echo | configuration.example10.xml |
 | example11 | Custom terminal commands | configuration.example11.xml |
 | example12 | Profile-selected components, factory methods, fields and event handlers | Three configurations below |
+| example13 | Framework services: command routing/execution, recovery, delivery, performance, room discovery and replicated state | configuration.example13.xml |
 
 Example6 defaults to 100 clients. Use `-Dtenio.clients=10000` before the main class to opt into a larger load test. It uses one platform reader thread per client and is a demonstration, not a high-scale benchmark driver.
 
@@ -135,7 +136,9 @@ On a machine with a graphical desktop, TenIO opens the monitor window. Enter `he
 to see the available commands. Try `player logout first` after connecting a test
 client, then run `history` to see the disconnect. Use Up and Down to recall commands.
 
-The original echo messages still work. Optional ZeroMap commands use short `op=1`
+Example 11 selects automatic command mode through `CommandPolicy`. Its echo client now uses
+short `op=3`; gameplay packets without a valid `op` are rejected. Other examples keep their
+existing event handlers. ZeroMap commands use short `op=1`
 and string `name` to create a room, or short `op=2` and string `chat` to send a
 message to the current room. Room creation is limited to 1 request per second with a
 burst of 2, and chat to 2 per second with a burst of 4, per player. Enter `limits` to
@@ -187,6 +190,64 @@ Profile names are trimmed and case-sensitive. An annotation's listed names are O
 
 Choose **one** of development or production in this example. Activating both introduces competing implementations and factory products. Using only metrics omits the base profile needed by the bootstrap and greeting service. Other examples explicitly select `default` and keep their unrestricted annotations.
 
+## Example 13: Framework services
+
+Install the updated core from the accompanying changes first; the example uses the framework service APIs in the updated core:
+
+```sh
+# In tenio-core
+mvn -Dgpg.skip=true clean install
+# In tenio-examples
+mvn clean verify
+java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example13.TestServerCapabilities configuration.example13.xml
+```
+
+In a second terminal, run the finite walkthrough client:
+
+```sh
+java -cp target/tenio-examples-1.0.0-jar-with-dependencies.jar com.tenio.examples.example13.TestClientCapabilities
+```
+
+| Framework feature | Example implementation | What to observe |
+| --- | --- | --- |
+| Ordered, bounded commands | `CapabilityCommands.Ready` uses `ROOM`, mailbox 64, 2 requests/second, burst 4. `State` uses `SESSION`; `Delivery` uses `CONCURRENT`; `Rooms` keeps default `INLINE`. | All command envelopes use short `op`. Startup shows `COMMAND` routing and registered names. The cached startup flag avoids registry checks in event mode. Missing, malformed and unknown codes never become player-message events. |
+| Authenticated recovery | `CapabilityRecovery`, player enrollment in the login handler, and the client's second TCP connection. | The client keeps a private token, reconnects with it, verifies rotation, and checks that room/player state survives. The policy uses default snapshot strategy and 30-second grace. Capture, mutation and response use the same room monitor. |
+| Response delivery | `CapabilityCommands.Delivery` sends important, replaceable (`demo-position`, two-second TTL) and best-effort responses. | The client verifies all three when the queue is healthy. Under backlog, only queued/unclaimed replaceable updates may be superseded; best-effort messages may be dropped. This does not acknowledge delivery. |
+| Performance history | The XML includes `performance`; `monitor` opens the local Performance tab on a graphical desktop. | Wait at least five seconds for samples under `logs/performance/`. Use `performance 5` in the monitor to load five minutes. Headless tests verify file export; no desktop is required. |
+| Public room discovery | `CapabilityFeatures` explicitly publishes one `demo` room; `Rooms` subscribes before taking a bounded page, acknowledges its revision and closes its subscription. | The client receives one public summary with room ID, name, free slots and state. Internal properties/passwords are not published. For a continuing lobby, retain the subscription, poll changes and requery on `RESET`. |
+| Typed replicated state | Room `ready` is server-writable and room-visible; player `ready` is owner-visible and client-writable. The ready handler snapshots/polls a scoped subscription. | The client updates at the current revision, sees a delta, retries a stale revision and verifies rejection without changing state, then checks the recovery snapshot. |
+
+All gameplay requests are `ZeroMap` values. Codes are encoded with `putShort`, revisions with
+`putLong`, and `ready` with `putBoolean`. Login remains a connection handshake.
+
+| `op` | Request fields besides `op` | Response |
+| --- | --- | --- |
+| `42` | `ready`: boolean; `revision`: last player-state revision received | `kind=ready` and a new revision, or `kind=conflict` with the current snapshot |
+| `43` | None | `kind=rooms`, page revision, total and bounded public summaries |
+| `44` | None | `kind=state`, player/room ID, revision and audience-filtered ready flags |
+| `45` | None | `kind=important`, `kind=position`, `kind=effect` under a healthy queue |
+
+The sample `ZeroMapCommandPolicy` implements the application's wire contract (`op` must be a
+short). Core does not reserve this key. Choose **one** receive mode: no policy means
+`EventReceivedMessageFromPlayer`; a policy plus registered commands means command handlers only.
+Mixed registrations produce a startup warning. `DatagramPacketPolicy` remains a separate UDP
+transport-envelope policy; it is not the command router. See the
+[core default rules](https://github.com/congcoi123/tenio-core#extension-points-and-default-rules)
+for overrides, fallback methods, queue thresholds, recovery bounds and room strategies.
+
+This is a **localhost teaching example**: the login identity is not authenticated and the TCP
+transport is not encrypted. Use authenticated login and an encrypted connection before deploying
+recovery tokens remotely. The client never prints the token. State and directory envelopes are
+application-defined; TenIO does not automatically broadcast them. Delivery options currently
+apply to the core outbound queue, not direct Netty WebSocket writes. The walkthrough does not
+simulate congestion or replay gaps; core regression tests cover those behaviors.
+
+`mvn clean verify` includes an isolated, headless server subprocess and the real TCP client,
+including invalid command envelopes, state conflicts, recovery, performance-file creation and
+startup warnings when both receive handler styles are registered.
+The test uses TCP port 8032; stop other example servers before running it. The subprocess keeps
+its logs in the test temporary directory and is stopped even if assertions fail.
+
 ## Shared Example Client
 
 `client/TCP`, `client/UDP`, `ClientCodec` and `ClientTasks` centralize transport and task lifecycle behavior. New code should connect explicitly, assign its fields, configure error/disconnection handlers, then start receiving. Constructor callbacks remain only as compatibility adapters.
@@ -205,7 +266,7 @@ The [`TenIO`](https://github.com/congcoi123/tenio) project is currently availabl
 Please check out the [changelog](CHANGELOG.md) for more details.
 
 ## Contributing
-Please check out the [checklist](CHECKLIST.md) and [contributing guideline](CONTRIBUTING.md) for more details.
+Please check out the [contributing guideline](CONTRIBUTING.md) for more details.
 
 ## Installation
 GitHub
