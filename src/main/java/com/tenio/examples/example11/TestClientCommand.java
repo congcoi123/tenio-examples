@@ -69,7 +69,7 @@ public final class TestClientCommand implements SocketListener<DataCollection> {
   }
 
   private void sendEcho() {
-    var request = DataUtility.newZeroMap();
+    var request = DataUtility.newZeroMap().putShort("op", TestServerCommand.ECHO);
     request.putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, "Hello from client");
     tcp.send(request);
 

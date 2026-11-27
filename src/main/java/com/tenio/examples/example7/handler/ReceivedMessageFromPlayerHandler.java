@@ -33,23 +33,25 @@ import com.tenio.examples.example7.constant.Example7Constant;
 import com.tenio.examples.server.SharedEventKey;
 
 @EventHandler
-public final class ReceivedMessageFromPlayerHandler extends AbstractHandler
-    implements EventReceivedMessageFromPlayer<Player, MsgPackMap> {
+public final class ReceivedMessageFromPlayerHandler extends AbstractHandler implements EventReceivedMessageFromPlayer<Player, MsgPackMap> {
 
-  @Override
-  public void onReceivedMessageFromPlayer(Player player, MsgPackMap message) {
-    var positions = message.getIntegerArray(SharedEventKey.KEY_DATA);
+    @Override
+    public void onReceivedMessageFromPlayer(Player player, MsgPackMap message) {
+        var positions = message.getIntegerArray(SharedEventKey.KEY_DATA);
+        if (positions == null || positions.length != 2 || player.getCurrentRoom().isEmpty()) {
+            return;
+        }
 
-    player.setProperty(Example7Constant.PLAYER_POSITION_X, positions[0]);
-    player.setProperty(Example7Constant.PLAYER_POSITION_Y, positions[1]);
+        player.setProperty(Example7Constant.PLAYER_POSITION_X, positions[0]);
+        player.setProperty(Example7Constant.PLAYER_POSITION_Y, positions[1]);
 
-    var players = player.getCurrentRoom().get().getSnapshotPlayersList();
+        var players = player.getCurrentRoom().get().getSnapshotPlayersList();
 
-    var parcel = msgmap()
-        .putString(SharedEventKey.KEY_COMMAND, "m")
-        .putString(SharedEventKey.KEY_USER, player.getIdentity())
-        .putIntegerArray(SharedEventKey.KEY_DATA, new int[] {positions[0], positions[1]});
+        var parcel = msgmap()
+                .putString(SharedEventKey.KEY_COMMAND, "m")
+                .putString(SharedEventKey.KEY_USER, player.getIdentity())
+                .putIntegerArray(SharedEventKey.KEY_DATA, new int[]{positions[0], positions[1]});
 
-    response().setRecipientPlayers(players).setContent(parcel).write();
-  }
+        response().setRecipientPlayers(players).setContent(parcel).write();
+    }
 }

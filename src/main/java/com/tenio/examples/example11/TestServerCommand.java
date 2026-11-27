@@ -28,6 +28,7 @@ import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.ApplicationLauncher;
 import com.tenio.core.bootstrap.annotation.Bootstrap;
 import com.tenio.core.bootstrap.annotation.ClientCommand;
+import com.tenio.core.bootstrap.annotation.Component;
 import com.tenio.core.bootstrap.annotation.EventHandler;
 import com.tenio.core.bootstrap.annotation.Setting;
 import com.tenio.core.command.client.AbstractClientCommandHandler;
@@ -36,10 +37,10 @@ import com.tenio.core.entity.define.result.ConnectionEstablishedResult;
 import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventConnectionEstablishedResult;
 import com.tenio.core.handler.event.EventPlayerLogin;
-import com.tenio.core.handler.event.EventReceivedMessageFromPlayer;
 import com.tenio.core.network.entity.session.Session;
 import com.tenio.examples.server.AbstractExampleConfiguration;
 import com.tenio.examples.server.SharedEventKey;
+import com.tenio.examples.server.ZeroMapCommandPolicy;
 
 /**
  * This class shows how a simple server handle messages that came from a client.
@@ -49,6 +50,12 @@ public final class TestServerCommand {
 
   private static final short CREATE_ROOM = 1;
   private static final short CHAT = 2;
+
+  /** Echo is a command in this example; examples 0–10 retain event-based handling. */
+  public static final short ECHO = 3;
+
+  @Component
+  public static final class CommandPolicy extends ZeroMapCommandPolicy {}
 
   public static void main(String[] params) {
     ApplicationLauncher.run(TestServerCommand.class, params);
@@ -112,16 +119,11 @@ public final class TestServerCommand {
     }
   }
 
-  @EventHandler
-  public static class ReceivedMessageFromPlayerHandler extends AbstractHandler
-      implements EventReceivedMessageFromPlayer<Player, ZeroMap> {
+  @ClientCommand(value = ECHO, name = "Echo", description = "Echo a client message")
+  public static class Echo extends AbstractClientCommandHandler<Player, ZeroMap> {
 
     @Override
-    public void onReceivedMessageFromPlayer(Player player, ZeroMap message) {
-      if (message.containsKey("op")) {
-        clientCommand().invoke(message.getShort("op"), player, message);
-        return;
-      }
+    public void execute(Player player, ZeroMap message) {
       var data = map().putString(SharedEventKey.KEY_CLIENT_SERVER_ECHO, String.format("Echo(%s): %s",
               player.getIdentity(),
               message.getString(SharedEventKey.KEY_CLIENT_SERVER_ECHO)));

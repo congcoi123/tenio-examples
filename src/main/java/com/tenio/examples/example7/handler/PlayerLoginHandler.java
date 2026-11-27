@@ -32,17 +32,17 @@ import com.tenio.core.handler.event.EventPlayerLogin;
 import com.tenio.examples.example7.constant.Example7Constant;
 
 @EventHandler
-public final class PlayerLoginHandler extends AbstractHandler
-    implements EventPlayerLogin<Player> {
+public final class PlayerLoginHandler extends AbstractHandler implements EventPlayerLogin<Player> {
 
-  @Override
-  public void onPlayerLogin(Player player) {
-    // create the initial position for player
-    int x = MathUtility.randInt(100, 400);
-    int y = MathUtility.randInt(100, 400);
-    player.setProperty(Example7Constant.PLAYER_POSITION_X, x);
-    player.setProperty(Example7Constant.PLAYER_POSITION_Y, y);
+    @Override
+    public void onPlayerLogin(Player player) {
+        // create the initial position for player
+        int x = MathUtility.randInt(100, 400);
+        int y = MathUtility.randInt(100, 400);
+        player.setProperty(Example7Constant.PLAYER_POSITION_X, x);
+        player.setProperty(Example7Constant.PLAYER_POSITION_Y, y);
 
-    api().joinRoom(player, api().getRoomById(0).get());
-  }
+        var room = api().getSnapshotRoomsList().stream().filter(candidate -> "test-room".equals(candidate.getName())).findFirst().orElseThrow();
+        api().joinRoom(player, room);
+    }
 }
