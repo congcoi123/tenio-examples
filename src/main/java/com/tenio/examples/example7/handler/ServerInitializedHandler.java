@@ -25,33 +25,31 @@ THE SOFTWARE.
 package com.tenio.examples.example7.handler;
 
 import com.tenio.core.bootstrap.annotation.EventHandler;
-import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.entity.define.mode.RoomRemoveMode;
+import com.tenio.core.handler.AbstractHandler;
 import com.tenio.core.handler.event.EventServerInitialization;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @EventHandler
-public final class ServerInitializedHandler extends AbstractHandler
-    implements EventServerInitialization {
+public final class ServerInitializedHandler extends AbstractHandler implements EventServerInitialization {
 
-  private final String pattern = "yyyy-MM-dd HH:mm:ss";
-  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    private final String pattern = "yyyy-MM-dd HH:mm:ss";
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-  @Override
-  public void onServerInitialization(String serverName) {
-    if (isInfoEnabled()) {
-      info("SERVER INITIALIZATION",
-          String.format("Started: %s", simpleDateFormat.format(new Date(api().getStartedTime()))));
+    @Override
+    public void onServerInitialization(String serverName) {
+        if (isInfoEnabled()) {
+            info("SERVER INITIALIZATION",
+                    String.format("Started: %s", simpleDateFormat.format(new Date(api().getStartedTime()))));
+        }
+
+        var roomSetting = roomSetting().setActivated(true).setMaxParticipants(2).setName("test-room").setRoomRemoveMode(RoomRemoveMode.NEVER_REMOVE).build();
+
+        var room = api().createRoom(roomSetting);
+        if (isInfoEnabled()) {
+            info("SERVER INITIALIZATION", String.format("Created room: %s", room.toString()));
+        }
     }
-
-    var roomSetting =
-        roomSetting().setActivated(true).setMaxParticipants(2).setName("test-room")
-            .setRoomRemoveMode(RoomRemoveMode.NEVER_REMOVE).build();
-
-    var room = api().createRoom(roomSetting);
-    if (isInfoEnabled()) {
-      info("SERVER INITIALIZATION", String.format("Created room: %s", room.toString()));
-    }
-  }
 }

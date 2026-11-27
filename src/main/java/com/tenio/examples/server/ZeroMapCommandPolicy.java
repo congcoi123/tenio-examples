@@ -28,17 +28,21 @@ import com.tenio.common.data.DataCollection;
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.command.client.ClientCommandPolicy;
 
-/** Application-owned protocol: every gameplay message carries a short command in {@code op}. */
+/**
+ * Application-owned protocol: every gameplay message carries a short command in {@code op}.
+ */
 public class ZeroMapCommandPolicy implements ClientCommandPolicy {
-  /** Command envelope key, shared by example clients and servers. */
-  public static final String COMMAND_KEY = "op";
+    /**
+     * Command envelope key, shared by example clients and servers.
+     */
+    public static final String COMMAND_KEY = "op";
 
-  @Override
-  public CommandRequest applyPolicy(DataCollection message) {
-    if (!(message instanceof ZeroMap request) || !request.containsKey(COMMAND_KEY)) {
-      return null;
+    @Override
+    public CommandRequest applyPolicy(DataCollection message) {
+        if (!(message instanceof ZeroMap request) || !request.containsKey(COMMAND_KEY)) {
+            return null;
+        }
+        // A wrong wire type throws and is rejected by core; it cannot reach the legacy event.
+        return new CommandRequest(request.getShort(COMMAND_KEY), request);
     }
-    // A wrong wire type throws and is rejected by core; it cannot reach the legacy event.
-    return new CommandRequest(request.getShort(COMMAND_KEY), request);
-  }
 }

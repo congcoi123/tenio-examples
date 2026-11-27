@@ -24,19 +24,31 @@ THE SOFTWARE.
 
 package com.tenio.examples.example13;
 
-/** Application wire codes; core does not reserve these numbers or field names. */
+/**
+ * Application wire codes; core does not reserve these numbers or field names.
+ */
 public final class CapabilityProtocol {
-  /** Ordered room mutation and revision-checked player state. */
-  public static final short READY = 42;
 
-  /** Query explicitly published rooms. */
-  public static final short ROOMS = 43;
+    /**
+     * Ordered room mutation and revision-checked player state.
+     */
+    public static final short READY = 42;
 
-  /** Read schema-filtered player and room state. */
-  public static final short STATE = 44;
+    /**
+     * Query explicitly published rooms.
+     */
+    public static final short ROOMS = 43;
 
-  /** Exercise important, replaceable and best-effort delivery. */
-  public static final short DELIVERY = 45;
+    /**
+     * Read schema-filtered player and room state.
+     */
+    public static final short STATE = 44;
 
-  private CapabilityProtocol() {}
+    /**
+     * Exercise important, replaceable and best-effort delivery.
+     */
+    public static final short DELIVERY = 45;
+
+    private CapabilityProtocol() {
+    }
 }

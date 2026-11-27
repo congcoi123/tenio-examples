@@ -108,31 +108,17 @@
 - Upgraded dependencies
 
 ## 1.0.0 2026-11-11 Feature release
-- Updated the tenio-core dependency to 1.0.0; added the required startup profile property to existing XML configurations.
-- Removed calls to the deleted setNeverDeported API and its obsolete XML property.
-- Added example12 with development, production and development+metrics profiles, selected components, bean factory methods, field injection, event handlers and a finite client.
-- Reworked shared TCP/UDP transports: explicit endpoints, bounded TCP frame lengths, serialized writes, exact UDP packet lengths, peer filtering, single receive loop and idempotent close.
-- Fixed the MsgPack UDP registration/convey-ID/echo flow.
-- Moved delayed echoes out of reader callbacks; tied client tasks and movement measurements to connection lifetime.
-- Fixed stress-client concurrent map access and identity collisions; reduced default load to 100 with an explicit system-property override.
-- Made movement counters atomic across interval resets and replaced unbounded statistics lists with lifetime aggregates.
-- Consolidated identical extension configuration parsing into AbstractExampleConfiguration while keeping each example's local Setting entry.
-- Used Java HttpClient with timeouts in the REST example, corrected the assembly main class, honored configuration arguments and guarded terminal-command arguments.
-- Added transport, profile, configuration and statistics regression tests.
+- Updated tenio-core to 1.0.0 and adapted configurations and removed APIs.
+- Added example 12 for profile-selected components, beans and event handlers.
+- Improved shared TCP/UDP transport validation, endpoint handling and connection cleanup.
+- Fixed MsgPack UDP registration and echo handling.
+- Improved delayed echoes, movement statistics and stress-client concurrency.
+- Consolidated configuration parsing and improved REST and startup examples.
 
-## 1.1.0 2026-11-25 Framework services
-- Example 11 now uses an injected `ClientCommandPolicy` instead of manual dispatch inside a player-message event. Echo has its own command code (3); the client is updated accordingly.
-- Add runnable example 13 for bounded command execution, token-based snapshot recovery, delivery options, persistent performance, explicit room discovery and schema/revision-controlled replicated state.
-- Add policy contract tests and an isolated headless TCP integration test, including invalid envelopes, stale revisions, token rotation and performance exports.
-- Document framework service setup, default rules, application-owned wire fields and exclusive receive modes.
-- Verify both clean builds: 1,606 core tests and 5 example tests pass, including mixed-handler startup diagnostics and a burst-traffic regression fix in core.
-
-### Documentation
-- Integrate command execution, recovery, response delivery, performance history, room discovery and replicated state into the main framework documentation.
-- Replace the separate optional-capabilities presentation with feature sections, service usage, defaults and a framework-services walkthrough in example 13.
-
-### WebSocket example and release
-- Release examples as 1.1.0 with tenio-core 1.1.0; retain tenio-engine 1.0.0.
-- Add example 7 TestClient using the JDK WebSocket transport, with finite login, fragmented movement, ping/pong and close checks. No external WebSocket client is required.
-- Keep the example room alive while empty, resolve it by name, validate movement coordinates and bind locally by default. Disable packet compression for the plain MessagePack walkthrough.
-- Document WS/WSS startup and add real-server integration coverage.
+## 1.1.0 2026-11-25 Feature release
+- Updated tenio-core and examples to 1.1.0; retained tenio-engine 1.0.0.
+- Updated example 11 to use automatic client command routing with ClientCommandPolicy.
+- Added example 13 for ordered commands, session recovery, delivery modes, room discovery, replicated state and performance history.
+- Added a JDK WebSocket client to example 7 without an external WebSocket client dependency.
+- Improved WebSocket room handling, movement validation and local configuration defaults.
+- Updated documentation for framework services, default policies and WS/WSS setup.

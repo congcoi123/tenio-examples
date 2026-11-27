@@ -33,135 +33,135 @@ import com.tenio.core.entity.Player;
 import com.tenio.core.entity.discovery.RoomDirectory;
 import com.tenio.core.entity.replication.ReplicatedState;
 import com.tenio.core.network.entity.outbound.packet.DeliveryOptions;
+
 import java.time.Duration;
 import java.util.Map;
 
-/** Separate commands demonstrate bounded execution and application-owned wire responses. */
+/**
+ * Separate commands demonstrate bounded execution and application-owned wire responses.
+ */
 public final class CapabilityCommands {
-  private CapabilityCommands() {}
 
-  @ClientCommand(
-      value = CapabilityProtocol.READY,
-      name = "Ready",
-      execution = ExecutionMode.ROOM,
-      mailboxCapacity = 64,
-      requestsPerSecond = 2,
-      burst = 4)
-  public static final class Ready extends AbstractClientCommandHandler<Player, ZeroMap> {
-    @Autowired private CapabilityFeatures features;
+    private CapabilityCommands() {
+    }
 
-    @Override
-    public void execute(Player player, ZeroMap message) {
-      if (player.getCurrentRoom().orElse(null) != features.room()) {
-        return;
-      }
-      synchronized (features.room()) {
-        var state = api().getStateReplication().player(player.getIdentity());
-        var audience = new ReplicatedState.Audience(player.getIdentity(), true, false);
-        try (var changes = state.subscribe(player.getIdentity())) {
-          changes.snapshot(audience);
-          try {
-            state.updateClient(
-                audience,
-                Map.of("ready", message.getBoolean("ready")),
-                message.getLong("revision"));
-          } catch (IllegalArgumentException | IllegalStateException | SecurityException conflict) {
-            response()
-                .setContent(features.snapshot(player).putString("kind", "conflict"))
-                .setRecipientPlayer(player)
-                .write();
-            return;
-          }
-          var delta = changes.poll(audience);
-          api()
-              .getStateReplication()
-              .room(features.room().getId())
-              .updateServer(Map.of("ready", message.getBoolean("ready")), -1);
-          var content =
-              features
-                  .snapshot(player)
-                  .putString("kind", "ready")
-                  .putBoolean("changed", delta != null);
-          response().setContent(content).setRecipientPlayer(player).write();
+    @ClientCommand(
+            value = CapabilityProtocol.READY,
+            name = "Ready",
+            execution = ExecutionMode.ROOM,
+            mailboxCapacity = 64,
+            requestsPerSecond = 2,
+            burst = 4)
+    public static final class Ready extends AbstractClientCommandHandler<Player, ZeroMap> {
+
+        @Autowired
+        private CapabilityFeatures features;
+
+        @Override
+        public void execute(Player player, ZeroMap message) {
+            if (player.getCurrentRoom().orElse(null) != features.room()) {
+                return;
+            }
+
+            synchronized (features.room()) {
+                var state = api().getStateReplication().player(player.getIdentity());
+                var audience = new ReplicatedState.Audience(player.getIdentity(), true, false);
+                try (var changes = state.subscribe(player.getIdentity())) {
+                    changes.snapshot(audience);
+                    try {
+                        state.updateClient(
+                                audience,
+                                Map.of("ready", message.getBoolean("ready")),
+                                message.getLong("revision")
+                        );
+                    } catch (IllegalArgumentException | IllegalStateException | SecurityException conflict) {
+                        response().setContent(features.snapshot(player).putString("kind", "conflict"))
+                                .setRecipientPlayer(player)
+                                .write();
+                        return;
+                    }
+                    var delta = changes.poll(audience);
+                    api().getStateReplication()
+                            .room(features.room().getId())
+                            .updateServer(Map.of("ready", message.getBoolean("ready")), -1);
+                    var content = features
+                            .snapshot(player)
+                            .putString("kind", "ready")
+                            .putBoolean("changed", delta != null);
+                    response().setContent(content).setRecipientPlayer(player).write();
+                }
+            }
         }
-      }
     }
-  }
 
-  @ClientCommand(value = CapabilityProtocol.ROOMS, name = "Find rooms")
-  public static final class Rooms extends AbstractClientCommandHandler<Player, ZeroMap> {
-    @Override
-    public void execute(Player player, ZeroMap message) {
-      var directory = api().getRoomDirectory();
-      var query = RoomDirectory.Query.group("demo");
-      // Subscribe before querying so changes after the snapshot revision can be retained.
-      try (var subscription = directory.subscribe(player.getIdentity(), "demo")) {
-        var page = directory.query(query);
-        subscription.acknowledgeSnapshot(page.revision());
-        var rows = array();
-        for (var room : page.rooms()) {
-          rows.addZeroMap(
-              map()
-                  .putLong("id", room.id())
-                  .putString("name", room.name())
-                  .putInteger("slots", room.availableSlots())
-                  .putString("state", room.state()));
+    @ClientCommand(value = CapabilityProtocol.ROOMS, name = "Find rooms")
+    public static final class Rooms extends AbstractClientCommandHandler<Player, ZeroMap> {
+        @Override
+        public void execute(Player player, ZeroMap message) {
+            var directory = api().getRoomDirectory();
+            var query = RoomDirectory.Query.group("demo");
+            // Subscribe before querying so changes after the snapshot revision can be retained.
+            try (var subscription = directory.subscribe(player.getIdentity(), "demo")) {
+                var page = directory.query(query);
+                subscription.acknowledgeSnapshot(page.revision());
+                var rows = array();
+                for (var room : page.rooms()) {
+                    rows.addZeroMap(map()
+                            .putLong("id", room.id())
+                            .putString("name", room.name())
+                            .putInteger("slots", room.availableSlots())
+                            .putString("state", room.state()));
+                }
+                response().setContent(map()
+                                .putString("kind", "rooms")
+                                .putInteger("total", page.total())
+                                .putLong("revision", page.revision())
+                                .putZeroArray("rooms", rows))
+                        .setRecipientPlayer(player)
+                        .write();
+            }
         }
-        response()
-            .setContent(
-                map()
-                    .putString("kind", "rooms")
-                    .putInteger("total", page.total())
-                    .putLong("revision", page.revision())
-                    .putZeroArray("rooms", rows))
-            .setRecipientPlayer(player)
-            .write();
-      }
     }
-  }
 
-  @ClientCommand(
-      value = CapabilityProtocol.STATE,
-      name = "Read state",
-      execution = ExecutionMode.SESSION)
-  public static final class State extends AbstractClientCommandHandler<Player, ZeroMap> {
-    @Autowired private CapabilityFeatures features;
+    @ClientCommand(
+            value = CapabilityProtocol.STATE,
+            name = "Read state",
+            execution = ExecutionMode.SESSION)
+    public static final class State extends AbstractClientCommandHandler<Player, ZeroMap> {
+        @Autowired
+        private CapabilityFeatures features;
 
-    @Override
-    public void execute(Player player, ZeroMap message) {
-      synchronized (features.room()) {
-        response()
-            .setContent(features.snapshot(player).putString("kind", "state"))
-            .setRecipientPlayer(player)
-            .write();
-      }
+        @Override
+        public void execute(Player player, ZeroMap message) {
+            synchronized (features.room()) {
+                response().setContent(features.snapshot(player).putString("kind", "state"))
+                        .setRecipientPlayer(player)
+                        .write();
+            }
+        }
     }
-  }
 
-  @ClientCommand(
-      value = CapabilityProtocol.DELIVERY,
-      name = "Delivery demo",
-      execution = ExecutionMode.CONCURRENT)
-  public static final class Delivery extends AbstractClientCommandHandler<Player, ZeroMap> {
-    private static final Duration UPDATE_TTL = Duration.ofSeconds(2);
+    @ClientCommand(
+            value = CapabilityProtocol.DELIVERY,
+            name = "Delivery demo",
+            execution = ExecutionMode.CONCURRENT)
+    public static final class Delivery extends AbstractClientCommandHandler<Player, ZeroMap> {
+        private static final Duration UPDATE_TTL = Duration.ofSeconds(2);
 
-    @Override
-    public void execute(Player player, ZeroMap message) {
-      response()
-          .delivery(DeliveryOptions.important())
-          .setContent(map().putString("kind", "important"))
-          .setRecipientPlayer(player)
-          .write();
-      response()
-          .delivery(DeliveryOptions.replaceable("demo-position", UPDATE_TTL))
-          .setContent(map().putString("kind", "position").putInteger("x", 1))
-          .setRecipientPlayer(player)
-          .write();
-      response()
-          .delivery(DeliveryOptions.bestEffort(UPDATE_TTL))
-          .setContent(map().putString("kind", "effect"))
-          .setRecipientPlayer(player)
-          .write();
+        @Override
+        public void execute(Player player, ZeroMap message) {
+            response().delivery(DeliveryOptions.important())
+                    .setContent(map().putString("kind", "important"))
+                    .setRecipientPlayer(player)
+                    .write();
+            response().delivery(DeliveryOptions.replaceable("demo-position", UPDATE_TTL))
+                    .setContent(map().putString("kind", "position").putInteger("x", 1))
+                    .setRecipientPlayer(player)
+                    .write();
+            response().delivery(DeliveryOptions.bestEffort(UPDATE_TTL))
+                    .setContent(map().putString("kind", "effect"))
+                    .setRecipientPlayer(player)
+                    .write();
+        }
     }
-  }
 }

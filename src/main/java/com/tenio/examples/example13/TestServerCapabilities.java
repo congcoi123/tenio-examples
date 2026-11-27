@@ -26,7 +26,11 @@ package com.tenio.examples.example13;
 
 import com.tenio.common.data.zero.ZeroMap;
 import com.tenio.core.ApplicationLauncher;
-import com.tenio.core.bootstrap.annotation.*;
+import com.tenio.core.bootstrap.annotation.Autowired;
+import com.tenio.core.bootstrap.annotation.Bootstrap;
+import com.tenio.core.bootstrap.annotation.Component;
+import com.tenio.core.bootstrap.annotation.EventHandler;
+import com.tenio.core.bootstrap.annotation.Setting;
 import com.tenio.core.entity.Player;
 import com.tenio.core.entity.define.result.ConnectionEstablishedResult;
 import com.tenio.core.handler.AbstractHandler;
@@ -43,43 +47,44 @@ import com.tenio.examples.server.ZeroMapCommandPolicy;
  */
 @Bootstrap
 public final class TestServerCapabilities {
-  public static void main(String[] args) {
-    ApplicationLauncher.run(TestServerCapabilities.class, args);
-  }
 
-  @Setting
-  public static final class Configuration extends AbstractExampleConfiguration {}
-
-  @Component
-  public static final class Commands extends ZeroMapCommandPolicy {}
-
-  @EventHandler
-  public static final class Login extends AbstractHandler
-      implements EventConnectionEstablishedResult<ZeroMap>, EventPlayerLogin<Player> {
-    @Autowired private CapabilityFeatures features;
-
-    @Override
-    public void onConnectionEstablishedResult(
-        Session session, ZeroMap message, ConnectionEstablishedResult result) {
-      if (result == ConnectionEstablishedResult.SUCCESS) {
-        // Local demonstration only. A deployed application must authenticate this identity.
-        api().login(message.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
-      }
+    public static void main(String[] args) {
+        ApplicationLauncher.run(TestServerCapabilities.class, args);
     }
 
-    @Override
-    public void onPlayerLogin(Player player) {
-      synchronized (features.room()) {
-        features.enroll(player);
-        var token = api().getRecoveryManager().issue(player);
-        var content =
-            features
-                .snapshot(player)
-                .putString("kind", "welcome")
-                .putString("resume-token", token)
-                .putLong("sequence", 0);
-        response().setContent(content).setRecipientPlayer(player).write();
-      }
+    @Setting
+    public static final class Configuration extends AbstractExampleConfiguration {
     }
-  }
+
+    @Component
+    public static final class Commands extends ZeroMapCommandPolicy {
+    }
+
+    @EventHandler
+    public static final class Login extends AbstractHandler implements EventConnectionEstablishedResult<ZeroMap>, EventPlayerLogin<Player> {
+
+        @Autowired
+        private CapabilityFeatures features;
+
+        @Override
+        public void onConnectionEstablishedResult(Session session, ZeroMap message, ConnectionEstablishedResult result) {
+            if (result == ConnectionEstablishedResult.SUCCESS) {
+                // Local demonstration only. A deployed application must authenticate this identity.
+                api().login(message.getString(SharedEventKey.KEY_PLAYER_LOGIN), session);
+            }
+        }
+
+        @Override
+        public void onPlayerLogin(Player player) {
+            synchronized (features.room()) {
+                features.enroll(player);
+                var token = api().getRecoveryManager().issue(player);
+                var content = features.snapshot(player)
+                                .putString("kind", "welcome")
+                                .putString("resume-token", token)
+                                .putLong("sequence", 0);
+                response().setContent(content).setRecipientPlayer(player).write();
+            }
+        }
+    }
 }
