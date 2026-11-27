@@ -116,6 +116,7 @@
 - Consolidated configuration parsing and improved REST and startup examples.
 
 ## 1.1.0 2026-11-25 Feature release
+- Added example 14 for the standalone Java 7 SDK, with TCP/UDP, WebSocket, rooms, recovery and state replication.
 - Updated tenio-core and examples to 1.1.0; retained tenio-engine 1.0.0.
 - Updated example 11 to use automatic client command routing with ClientCommandPolicy.
 - Added example 13 for ordered commands, session recovery, delivery modes, room discovery, replicated state and performance history.

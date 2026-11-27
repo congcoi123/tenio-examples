@@ -126,6 +126,7 @@ public final class SimpleServer extends AbstractHandler implements EventConnecti
 | example11 | Custom terminal commands | configuration.example11.xml |
 | example12 | Profile-selected components, factory methods, fields and event handlers | Three configurations below |
 | example13 | Framework services: command routing/execution, recovery, delivery, performance, room discovery and replicated state | configuration.example13.xml |
+| example14 | Standalone Java 7 SDK: TCP/UDP, WebSocket, rooms, commands, recovery and state | configuration.example14.xml |
 
 Example6 defaults to 100 clients. Use `-Dtenio.clients=10000` before the main class to opt into a larger load test. It uses one platform reader thread per client and is a demonstration, not a high-scale benchmark driver.
 
@@ -282,6 +283,53 @@ including invalid command envelopes, state conflicts, recovery, performance-file
 startup warnings when both receive handler styles are registered.
 The test uses TCP port 8032; stop other example servers before running it. The subprocess keeps
 its logs in the test temporary directory and is stopped even if assertions fail.
+
+## Example 14: Standalone Java Client SDK
+
+This server pairs with the accompanying `tenio-client-sdk` project. The server uses Java 21/Core 1.1.0; the standalone SDK and its console/Swing tools run on Java 7+. The server has no dependency on the SDK.
+
+Build the examples, then run from this repository directory:
+
+```sh
+mvn clean install
+java -Dlog4j.configurationFile=log4j2.sdk-showcase.xml -cp target/tenio-examples-1.1.0-jar-with-dependencies.jar com.tenio.examples.example14.TestServerSdkShowcase configuration.example14.xml
+```
+
+The dedicated INFO configuration avoids logging authentication payloads. Defaults are TCP 8032, UDP 20004, WebSocket 8033 (`/websocket`) and HTTP 9999 (`/ping`), bound to localhost. The selected server profiles enable metrics, local monitoring, history and performance archives. The monitor window is skipped on headless hosts.
+
+In the SDK project, run `mvn clean install`, then start its finite walkthrough in another terminal:
+
+```sh
+java -jar tools/target/tenio-client-tools-1.0.0-jar-with-dependencies.jar --showcase tcp://localhost:8032 http://localhost:9999/ping zero
+java -jar tools/target/tenio-client-tools-1.0.0-jar-with-dependencies.jar --showcase tcp://localhost:8032 http://localhost:9999/ping msgpack
+java -jar tools/target/tenio-client-tools-1.0.0-jar-with-dependencies.jar --showcase ws://localhost:8033/websocket http://localhost:9999/ping zero
+```
+
+The walkthrough registers listeners explicitly and checks two-player login, create/join/leave, room/channel chat, rate-limit counters, room discovery, ready-state revisions/conflicts, delivery options, scheduler samples, HTTP and token-rotating recovery. TCP runs also check UDP-only echo and fresh UDP registration after recovery. Current Core associates UDP with TCP sessions, so WS runs use the stream features.
+
+| Operation | Meaning | Example fields after `command <code>` |
+| --- | --- | --- |
+| 1 | Echo | `text:string="Hello SDK"` |
+| 2 | Create room | `name:string="SDK room"` |
+| 3 | Join room | `room:long=2` |
+| 4 | Room chat; 2/second, burst 4 | `text:string="Hello room"` |
+| 5 | Set player ready at an expected revision | `ready:boolean=true revision:long=1` |
+| 6 | Public room discovery | None |
+| 7 | Caller-visible state snapshot | None |
+| 8 | Delivery policy demonstration | None |
+| 9 | Leave room | None |
+| 10 | Channel chat | `text:string="Hello channel"` |
+| 11 | Chat limit counters | None |
+| 12 | Application keepalive | None |
+
+Run the SDK launcher without arguments for its native-style Swing window, or with `--console` for a terminal. Start with `connect tcp://localhost:8032 zero`, then `login Alice`. `help`, `stats` and `clear` are local SDK tool commands; they are separate from server administrator commands. The finite walkthrough handles credentials, heartbeat and recovery programmatically. Generic debug tools intentionally do not assume those application payloads.
+
+Stream heartbeat runs every 5 seconds after login; registered UDP keepalive runs every 10 seconds. Main TCP read timeout is 30 seconds, scanned by the framework maintenance scheduler. UDP traffic does not keep the primary TCP connection alive. The server's `TickJob` uses `@Scheduled` and creates no executor itself.
+
+This example uses local demonstration names, not account authentication. The command codes and payloads illustrate an application protocol; they are not reserved SDK operations.
+
+WebSocket walkthroughs also send a request larger than 64 KiB to exercise SDK fragmentation.
+The SDK keeps its own 1.0.0 artifact version and requires no server library at runtime.
 
 ## Shared Example Client
 
