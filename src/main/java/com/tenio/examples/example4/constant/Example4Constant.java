@@ -36,7 +36,7 @@ public final class Example4Constant {
   // time in seconds
   public static final int SEND_MEASUREMENT_REQUEST_INTERVAL = 20;
 
-  public static final int NUMBER_OF_PLAYERS = 500;
+  public static final int NUMBER_OF_PLAYERS = 100;
 
   public static final int NUMBER_OF_THREADS_WORKER_POOL = 64;
   public static final int NUMBER_OF_TASKS_PER_THREAD_WORKER_POOL = 300;

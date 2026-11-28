@@ -108,14 +108,18 @@
 - Upgraded dependencies
 
 ## 1.0.0 2026-11-11 Feature release
-- Updated the tenio-core dependency to 1.0.0; added the required startup profile property to existing XML configurations.
-- Removed calls to the deleted setNeverDeported API and its obsolete XML property.
-- Added example12 with development, production and development+metrics profiles, selected components, bean factory methods, field injection, event handlers and a finite client.
-- Reworked shared TCP/UDP transports: explicit endpoints, bounded TCP frame lengths, serialized writes, exact UDP packet lengths, peer filtering, single receive loop and idempotent close.
-- Fixed the MsgPack UDP registration/convey-ID/echo flow.
-- Moved delayed echoes out of reader callbacks; tied client tasks and movement measurements to connection lifetime.
-- Fixed stress-client concurrent map access and identity collisions; reduced default load to 100 with an explicit system-property override.
-- Made movement counters atomic across interval resets and replaced unbounded statistics lists with lifetime aggregates.
-- Consolidated identical extension configuration parsing into AbstractExampleConfiguration while keeping each example's local Setting entry.
-- Used Java HttpClient with timeouts in the REST example, corrected the assembly main class, honored configuration arguments and guarded terminal-command arguments.
-- Added transport, profile, configuration and statistics regression tests.
+- Updated tenio-core to 1.0.0 and adapted configurations and removed APIs.
+- Added example 12 for profile-selected components, beans and event handlers.
+- Improved shared TCP/UDP transport validation, endpoint handling and connection cleanup.
+- Fixed MsgPack UDP registration and echo handling.
+- Improved delayed echoes, movement statistics and stress-client concurrency.
+- Consolidated configuration parsing and improved REST and startup examples.
+
+## 1.1.0 2026-11-25 Feature release
+- Added example 14 for the standalone Java 7 SDK, with TCP/UDP, WebSocket, rooms, recovery and state replication.
+- Updated tenio-core and examples to 1.1.0; retained tenio-engine 1.0.0.
+- Updated example 11 to use automatic client command routing with ClientCommandPolicy.
+- Added example 13 for ordered commands, session recovery, delivery modes, room discovery, replicated state and performance history.
+- Added a JDK WebSocket client to example 7 without an external WebSocket client dependency.
+- Improved WebSocket room handling, movement validation and local configuration defaults.
+- Updated documentation for framework services, default policies and WS/WSS setup.

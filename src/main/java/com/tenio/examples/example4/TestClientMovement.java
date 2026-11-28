@@ -51,8 +51,7 @@ import java.util.concurrent.TimeUnit;
  * request.<br>
  * 4. Receive a response for allowed UDP connection.<br>
  */
-public final class TestClientMovement extends AbstractLogger
-    implements SocketListener<ZeroMap>, DatagramListener<ZeroMap> {
+public final class TestClientMovement extends AbstractLogger implements SocketListener<ZeroMap>, DatagramListener<ZeroMap> {
 
   private static final boolean LOGGER_DEBUG = false;
   private static final NetworkStatistic statistic = NetworkStatistic.newInstance();
